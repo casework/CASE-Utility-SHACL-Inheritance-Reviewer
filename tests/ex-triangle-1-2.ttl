@@ -1,0 +1,16 @@
+@prefix ex: <http://example.org/ontology/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+ex:Triangle
+  a sh:NodeShape ;
+  sh:property ex:PropertyShape-1 ;
+  sh:targetClass ex:Triangle ;
+  .
+
+ex:PropertyShape-1
+  a sh:PropertyShape ;
+  sh:path ex:hasPoint ;
+  sh:class ex:Point ;
+  sh:minCount 3 ;
+  sh:maxCount 3 ;
+  .

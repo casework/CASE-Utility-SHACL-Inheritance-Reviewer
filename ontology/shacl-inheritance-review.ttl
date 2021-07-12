@@ -1,0 +1,134 @@
+# baseURI: http://example.org/ontology/shacl-inheritance-review
+
+@base <http://example.org/ontology/shacl-inheritance-review> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/ontology/shacl-inheritance-review>
+	a owl:Ontology ;
+	rdfs:label "SHACL Inheritance Review"@en ;
+	rdfs:comment "An ontology to review inheritance of SHACL PropertyShapes." ;
+	owl:imports <http://www.w3.org/ns/shacl#> ;
+	owl:ontologyIRI <http://example.org/ontology/shacl-inheritance-review> ;
+	.
+
+shir:InheritanceValidationReport
+	a owl:Class ;
+	rdfs:subClassOf sh:ValidationReport ;
+	.
+
+shir:PropertyShapeBroadenedError
+	a owl:Class ;
+	rdfs:subClassOf shir:ShapeBroadenedError ;
+	rdfs:comment "A denotation that a PropertyShape on a subclass somehow accepts a broader set than the superclass."@en ;
+	.
+
+shir:PropertyShapeComponentBroadenedError
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeBroadenedError ;
+	.
+
+shir:PropertyShapeComponentBroadenedError-class
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeComponentBroadenedError ;
+	shir:reviews sh:class ;
+	.
+
+shir:PropertyShapeComponentBroadenedError-datatype
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeComponentBroadenedError ;
+	shir:reviews sh:datatype ;
+	.
+
+shir:PropertyShapeComponentBroadenedError-maxCount
+	a owl:Class ;
+	rdfs:subClassOf
+		shir:PropertyShapeComponentBroadenedError ,
+		shir:PropertyShapeIntervalBroadenedError
+		;
+	shir:reviews sh:maxCount ;
+	.
+
+shir:PropertyShapeComponentBroadenedError-minCount
+	a owl:Class ;
+	rdfs:subClassOf
+		shir:PropertyShapeComponentBroadenedError ,
+		shir:PropertyShapeIntervalBroadenedError
+		;
+	shir:reviews sh:minCount ;
+	.
+
+shir:PropertyShapeComponentBroadenedError-path
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeComponentBroadenedError ;
+	shir:reviews sh:path ;
+	.
+
+shir:PropertyShapeComponentDroppedError
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeBroadenedError ;
+	.
+
+shir:PropertyShapeComponentDroppedError-class
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeComponentDroppedError ;
+	shir:reviews sh:class ;
+	.
+
+shir:PropertyShapeComponentDroppedError-datatype
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeComponentDroppedError ;
+	shir:reviews sh:datatype ;
+	.
+
+shir:PropertyShapeComponentDroppedError-maxCount
+	a owl:Class ;
+	rdfs:subClassOf
+		shir:PropertyShapeComponentDroppedError ,
+		shir:PropertyShapeIntervalBroadenedError
+		;
+	shir:reviews sh:maxCount ;
+	.
+
+shir:PropertyShapeComponentDroppedError-minCount
+	a owl:Class ;
+	rdfs:subClassOf
+		shir:PropertyShapeComponentDroppedError ,
+		shir:PropertyShapeIntervalBroadenedError
+		;
+	shir:reviews sh:minCount ;
+	.
+
+shir:PropertyShapeDroppedError
+	a owl:Class ;
+	rdfs:subClassOf shir:ShapeBroadenedError ;
+	.
+
+shir:ShapeBroadenedError
+	a owl:Class ;
+	rdfs:subClassOf sh:ValidationResult ;
+	rdfs:comment "A denotation that the set of PropertyShapes on a class somehow accepts a broader set of annotations than one or more of its superclasses."@en ;
+	.
+
+shir:PropertyShapeIntervalBroadenedError
+	a owl:Class ;
+	rdfs:subClassOf shir:PropertyShapeBroadenedError ;
+	.
+
+shir:reviews
+	a owl:AnnotationProperty ;
+	rdfs:domain shir:PropertyShapeBroadenedError ;
+	rdfs:range rdf:Property ;
+	.
+
+shir:shouldTriggerBroadeningError
+	a owl:AnnotationProperty ;
+	rdfs:comment "This is used for unit testing."@en ;
+	rdfs:domain sh:NodeShape ;
+	rdfs:range shir:ShapeBroadenedError ;
+	.
+

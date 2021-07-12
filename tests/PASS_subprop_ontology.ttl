@@ -1,0 +1,141 @@
+# baseURI: http://example.org/ontology/example
+
+@base <http://example.org/ontology/example/> .
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:ClassA
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	sh:property ex:propertyShape-DatatypeProperty-broadest ;
+	.
+
+ex:ClassB
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassA ;
+	sh:property ex:propertyShape-DatatypeProperty-middle ;
+	.
+
+ex:ClassC
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassB ;
+	sh:property ex:propertyShape-DatatypeProperty-narrowest ;
+	.
+
+ex:ClassD
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	sh:property ex:propertyShape-ObjectProperty-broadest ;
+	.
+
+ex:ClassE
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassD ;
+	sh:property ex:propertyShape-ObjectProperty-middle ;
+	.
+
+ex:ClassF
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassE ;
+	sh:property ex:propertyShape-ObjectProperty-narrowest ;
+	.
+
+ex:ClassX
+	a owl:Class ;
+	.
+
+ex:ClassY
+	a owl:Class ;
+	rdfs:subClassOf ex:ClassX ;
+	.
+
+ex:propertyShape-DatatypeProperty-broadest
+	a sh:PropertyShape ;
+	sh:path ex:d-property-top ;
+	.
+
+ex:propertyShape-DatatypeProperty-middle
+	a sh:PropertyShape ;
+	sh:path ex:d-property-sub-top ;
+	sh:minCount 1;
+	sh:maxCount 4;
+	sh:datatype xsd:integer ;
+	.
+
+ex:propertyShape-DatatypeProperty-narrowest
+	a sh:PropertyShape ;
+	sh:path ex:d-property-sub-sub-top ;
+	sh:minCount 2;
+	sh:maxCount 3;
+	sh:datatype xsd:integer ;
+	.
+
+ex:propertyShape-ObjectProperty-broadest
+	a sh:PropertyShape ;
+	sh:path ex:o-property-top ;
+	.
+
+ex:propertyShape-ObjectProperty-middle
+	a sh:PropertyShape ;
+	sh:path ex:o-property-sub-top ;
+	sh:minCount 1;
+	sh:maxCount 4;
+	sh:class ex:ClassX ;
+	.
+
+ex:propertyShape-ObjectProperty-narrowest
+	a sh:PropertyShape ;
+	sh:path ex:o-property-sub-sub-top ;
+	sh:minCount 2;
+	sh:maxCount 3;
+	sh:class ex:ClassY ;
+	.
+
+ex:d-property-top
+	a owl:DatatypeProperty ;
+	.
+
+ex:d-property-sub-top
+	a owl:DatatypeProperty ;
+	rdfs:subPropertyOf ex:d-property-top ;
+	.
+
+ex:d-property-sub-sub-top
+	a owl:DatatypeProperty ;
+	rdfs:subPropertyOf ex:d-property-sub-top ;
+	.
+
+ex:o-property-top
+	a owl:ObjectProperty ;
+	.
+
+ex:o-property-sub-top
+	a owl:ObjectProperty ;
+	rdfs:subPropertyOf ex:o-property-top ;
+	.
+
+ex:o-property-sub-sub-top
+	a owl:ObjectProperty ;
+	rdfs:subPropertyOf ex:o-property-sub-top ;
+	.
+

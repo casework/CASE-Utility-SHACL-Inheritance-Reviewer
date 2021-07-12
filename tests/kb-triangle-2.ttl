@@ -1,0 +1,11 @@
+@prefix ex: <http://example.org/ontology/> .
+@prefix kb: <http://example.org/kb/> .
+
+kb:point-4 a ex:Point .
+kb:point-5 a ex:Point .
+
+kb:triangle-2
+  a ex:Triangle ;
+  ex:hasPoint kb:point-4 ;
+  ex:hasPoint kb:point-5 ;
+  .

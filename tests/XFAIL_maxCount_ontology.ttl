@@ -1,0 +1,160 @@
+# baseURI: http://example.org/ontology/example
+
+@base <http://example.org/ontology/example/> .
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:ClassA
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	sh:property
+		[
+			sh:path ex:property-null-max-broader ;
+		] ,
+		[
+			sh:path ex:property-null-max-null ;
+		] ,
+		[
+			sh:path ex:property-null-max-same-null ;
+		] ,
+		[
+			sh:path ex:property-null-max-same-narrower ;
+		]
+		;
+	.
+
+ex:ClassB
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassA ;
+	sh:property
+		ex:ClassB-property-null-max-same-null ,
+		[
+			sh:path ex:property-null-max-broader ;
+		] ,
+		[
+			sh:path ex:property-null-max-null ;
+		] ,
+		[
+			sh:maxCount "1"^^xsd:integer ;
+			sh:path ex:property-null-max-same-narrower ;
+		]
+		;
+	.
+
+ex:ClassB-property-null-max-same-null
+	sh:maxCount "1"^^xsd:integer ;
+	sh:path ex:property-null-max-same-null ;
+	.
+
+ex:ClassC
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassB ;
+	sh:property
+		ex:ClassC-property-null-max-broader ,
+		ex:ClassC-property-null-max-null ,
+		ex:ClassC-property-null-max-same-null ,
+		[
+			sh:maxCount "1"^^xsd:integer ;
+			sh:path ex:property-null-max-same-narrower ;
+		]
+		;
+	.
+
+ex:ClassC-property-null-max-broader
+	sh:maxCount "0"^^xsd:integer ;
+	sh:path ex:property-null-max-broader ;
+	.
+
+ex:ClassC-property-null-max-null
+	sh:maxCount "1"^^xsd:integer ;
+	sh:path ex:property-null-max-null ;
+	.
+
+ex:ClassC-property-null-max-same-null
+	sh:maxCount "1"^^xsd:integer ;
+	sh:path ex:property-null-max-same-null ;
+	.
+
+ex:ClassD
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassC ;
+	sh:property
+		[
+			sh:maxCount "1"^^xsd:integer ;
+			sh:path ex:property-null-max-broader ;
+		] ,
+		[
+			sh:path ex:property-null-max-null ;
+		] ,
+		[
+			sh:path ex:property-null-max-same-null ;
+		] ,
+		[
+			sh:maxCount "0"^^xsd:integer ;
+			sh:path ex:property-null-max-same-narrower ;
+		]
+		;
+	shir:shouldTriggerBroadeningError
+		[
+			a shir:PropertyShapeComponentBroadenedError-maxCount ;
+			rdfs:seeAlso ex:ClassC ;
+			sh:resultPath ex:property-null-max-broader ;
+			sh:sourceShape ex:ClassC-property-null-max-broader ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-maxCount ;
+			rdfs:seeAlso ex:ClassC ;
+			sh:resultPath ex:property-null-max-null ;
+			sh:sourceShape ex:ClassC-property-null-max-null ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-maxCount ;
+			rdfs:seeAlso ex:ClassB ;
+			sh:sourceShape ex:ClassB-property-null-max-same-null ;
+			sh:resultPath ex:property-null-max-same-null ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-maxCount ;
+			rdfs:seeAlso ex:ClassC ;
+			sh:resultPath ex:property-null-max-same-null ;
+			sh:sourceShape ex:ClassC-property-null-max-same-null ;
+		]
+		;
+	.
+
+ex:property-null-max-broader
+	a owl:DatatypeProperty ;
+	rdfs:comment "Property has no maxCount in PropertyShape of A or B, defined maximum in C, higher maximum in D." ;
+	.
+
+ex:property-null-max-null
+	a owl:DatatypeProperty ;
+	rdfs:comment "Property has no maxCount in PropertyShape of A or B, defined maximum in C, no maximum in D." ;
+	.
+
+ex:property-null-max-same-null
+	a owl:DatatypeProperty ;
+	rdfs:comment "Property has no maxCount in PropertyShape of A, defined maximum in B, same maximum in C, no maximum in D." ;
+	.
+
+ex:property-null-max-same-narrower
+	a owl:DatatypeProperty ;
+	rdfs:comment "Property has no maxCount in PropertyShape of A, defined maximum in B, same maximum in C, lower maximum in D." ;
+	.
+

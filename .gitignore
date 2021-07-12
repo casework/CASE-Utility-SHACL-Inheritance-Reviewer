@@ -1,0 +1,8 @@
+*.done.log
+*.egg-info
+*.jar
+*.swp
+.generated-*
+.pytest_cache
+__pycache__
+catalog-v001.xml

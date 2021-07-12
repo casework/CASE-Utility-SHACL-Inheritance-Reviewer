@@ -1,0 +1,104 @@
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:ClassA
+	sh:property ex:ClassA-property ;
+	.
+
+ex:ClassA-property
+	sh:class ex:Class-sub-top ;
+	sh:path ex:property ;
+	.
+
+ex:ClassB
+	sh:property ex:ClassB-property ;
+	.
+
+ex:ClassB-property
+	sh:class ex:Class-sub-sub-top ;
+	sh:path ex:property ;
+	.
+
+ex:ClassC
+	sh:property [
+		sh:class ex:Class-top ;
+		sh:path ex:property ;
+	] ;
+	.
+
+ex:ClassD
+	sh:property [
+		sh:class ex:Class-top ;
+		sh:path ex:property ;
+	] ;
+	.
+
+ex:ClassE
+	sh:property [
+		sh:path ex:property ;
+	] ;
+	.
+
+[]
+	a shir:InheritanceValidationReport ;
+	sh:conforms "false"^^xsd:boolean ;
+	sh:result
+		[
+			a shir:PropertyShapeComponentBroadenedError-class ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:focusNode ex:ClassC ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) corresponding with an ancestor class's (rdfs:seeAlso) property shape (sh:sourceShape).  However, the sh:class references on the two property shapes are inverted - the subclass shape's sh:class is a superclass of the ancestor class property shape's sh:class." ;
+			sh:resultPath ex:property ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassA-property ;
+			sh:value [
+				sh:class ex:Class-top ;
+				sh:path ex:property ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentBroadenedError-class ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:focusNode ex:ClassD ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) corresponding with an ancestor class's (rdfs:seeAlso) property shape (sh:sourceShape).  However, the sh:class references on the two property shapes are inverted - the subclass shape's sh:class is a superclass of the ancestor class property shape's sh:class." ;
+			sh:resultPath ex:property ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassA-property ;
+			sh:value [
+				sh:class ex:Class-top ;
+				sh:path ex:property ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentBroadenedError-class ;
+			rdfs:seeAlso ex:ClassB ;
+			sh:focusNode ex:ClassC ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) corresponding with an ancestor class's (rdfs:seeAlso) property shape (sh:sourceShape).  However, the sh:class references on the two property shapes are inverted - the subclass shape's sh:class is a superclass of the ancestor class property shape's sh:class." ;
+			sh:resultPath ex:property ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassB-property ;
+			sh:value [
+				sh:class ex:Class-top ;
+				sh:path ex:property ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-class ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:focusNode ex:ClassE ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) corresponding with an ancestor class's (rdfs:seeAlso) property shape (sh:sourceShape).  But, the subclass's property shape is missing its sh:class." ;
+			sh:resultPath ex:property ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassA-property ;
+			sh:value [
+				sh:path ex:property ;
+			] ;
+		]
+		;
+	.
+

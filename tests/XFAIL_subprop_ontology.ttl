@@ -1,0 +1,258 @@
+# baseURI: http://example.org/ontology/example
+
+@base <http://example.org/ontology/example/> .
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/ontology/example>
+	a owl:Ontology ;
+	rdfs:comment "Class hierarchies go, in increasing depth order, A-B-C and D-E-F.  Their property shapes have their relative specificity declared in names, except the sh:path follows the applicable-class order in order to trigger subPropertyOf-based expansion detection." ;
+	.
+
+ex:ClassA
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	sh:property ex:propertyShape-DatatypeProperty-narrowest ;
+	.
+
+ex:ClassB
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassA ;
+	sh:property ex:propertyShape-DatatypeProperty-middle ;
+	shir:shouldTriggerBroadeningError
+		[
+			a shir:PropertyShapeComponentBroadenedError-maxCount ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:resultPath ex:d-property-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
+			sh:value ex:propertyShape-DatatypeProperty-middle
+		] ,
+		[
+			a shir:PropertyShapeComponentBroadenedError-minCount ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:resultPath ex:d-property-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
+			sh:value ex:propertyShape-DatatypeProperty-middle ;
+		]
+		;
+	.
+
+ex:ClassC
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassB ;
+	sh:property ex:propertyShape-DatatypeProperty-broadest ;
+	shir:shouldTriggerBroadeningError
+		[
+			a shir:PropertyShapeComponentBroadenedError-path ;
+			rdfs:seeAlso ex:ClassB ;
+			sh:resultPath ex:d-property-sub-sub-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-middle ;
+			sh:value ex:propertyShape-DatatypeProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-datatype ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:resultPath ex:d-property-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
+			sh:value ex:propertyShape-DatatypeProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-maxCount ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:resultPath ex:d-property-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
+			sh:value ex:propertyShape-DatatypeProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-minCount ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:resultPath ex:d-property-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
+			sh:value ex:propertyShape-DatatypeProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeDroppedError ;
+			rdfs:seeAlso ex:ClassB ;
+			sh:resultPath ex:d-property-sub-sub-top ;
+			sh:sourceShape ex:propertyShape-DatatypeProperty-middle ;
+		]
+		;
+	.
+
+ex:ClassD
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	sh:property ex:propertyShape-ObjectProperty-narrowest ;
+	.
+
+ex:ClassE
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassD ;
+	sh:property ex:propertyShape-ObjectProperty-middle ;
+	shir:shouldTriggerBroadeningError
+		[
+			a shir:PropertyShapeComponentBroadenedError-class ;
+			rdfs:seeAlso ex:ClassD ;
+			sh:resultPath ex:o-property-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
+			sh:value ex:propertyShape-ObjectProperty-middle ;
+		] ,
+		[
+			a shir:PropertyShapeComponentBroadenedError-maxCount ;
+			rdfs:seeAlso ex:ClassD ;
+			sh:resultPath ex:o-property-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
+			sh:value ex:propertyShape-ObjectProperty-middle ;
+		] ,
+		[
+			a shir:PropertyShapeComponentBroadenedError-minCount ;
+			rdfs:seeAlso ex:ClassD ;
+			sh:resultPath ex:o-property-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
+			sh:value ex:propertyShape-ObjectProperty-middle ;
+		]
+		;
+	.
+
+ex:ClassF
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassE ;
+	sh:property ex:propertyShape-ObjectProperty-broadest ;
+	shir:shouldTriggerBroadeningError
+		[
+			a shir:PropertyShapeComponentBroadenedError-path ;
+			rdfs:seeAlso ex:ClassE ;
+			sh:resultPath ex:o-property-sub-sub-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-middle ;
+			sh:value ex:propertyShape-ObjectProperty-broadest
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-class ;
+			rdfs:seeAlso ex:ClassD ;
+			sh:resultPath ex:o-property-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
+			sh:value ex:propertyShape-ObjectProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-maxCount ;
+			rdfs:seeAlso ex:ClassD ;
+			sh:resultPath ex:o-property-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
+			sh:value ex:propertyShape-ObjectProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-minCount ;
+			rdfs:seeAlso ex:ClassD ;
+			sh:resultPath ex:o-property-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
+			sh:value ex:propertyShape-ObjectProperty-broadest ;
+		] ,
+		[
+			a shir:PropertyShapeDroppedError ;
+			rdfs:seeAlso ex:ClassE ;
+			sh:resultPath ex:o-property-sub-sub-top ;
+			sh:sourceShape ex:propertyShape-ObjectProperty-middle
+		]
+		;
+	.
+
+ex:ClassX
+	a owl:Class ;
+	.
+
+ex:ClassY
+	a owl:Class ;
+	rdfs:subClassOf ex:ClassX ;
+	.
+
+ex:propertyShape-DatatypeProperty-broadest
+	a sh:PropertyShape ;
+	sh:path ex:d-property-sub-top ;
+	.
+
+ex:propertyShape-DatatypeProperty-middle
+	a sh:PropertyShape ;
+	sh:path ex:d-property-sub-sub-top ;
+	sh:minCount 1;
+	sh:maxCount 4;
+	sh:datatype xsd:integer ;
+	.
+
+ex:propertyShape-DatatypeProperty-narrowest
+	a sh:PropertyShape ;
+	sh:path ex:d-property-top ;
+	sh:minCount 2;
+	sh:maxCount 3;
+	sh:datatype xsd:integer ;
+	.
+
+ex:propertyShape-ObjectProperty-broadest
+	a sh:PropertyShape ;
+	sh:path ex:o-property-sub-top ;
+	.
+
+ex:propertyShape-ObjectProperty-middle
+	a sh:PropertyShape ;
+	sh:path ex:o-property-sub-sub-top ;
+	sh:minCount 1;
+	sh:maxCount 4;
+	sh:class ex:ClassX ;
+	.
+
+ex:propertyShape-ObjectProperty-narrowest
+	a sh:PropertyShape ;
+	sh:path ex:o-property-top ;
+	sh:minCount 2;
+	sh:maxCount 3;
+	sh:class ex:ClassY ;
+	.
+
+ex:d-property-top
+	a owl:DatatypeProperty ;
+	.
+
+ex:d-property-sub-top
+	a owl:DatatypeProperty ;
+	rdfs:subPropertyOf ex:d-property-top ;
+	.
+
+ex:d-property-sub-sub-top
+	a owl:DatatypeProperty ;
+	rdfs:subPropertyOf ex:d-property-sub-top ;
+	.
+
+ex:o-property-top
+	a owl:ObjectProperty ;
+	.
+
+ex:o-property-sub-top
+	a owl:ObjectProperty ;
+	rdfs:subPropertyOf ex:o-property-top ;
+	.
+
+ex:o-property-sub-sub-top
+	a owl:ObjectProperty ;
+	rdfs:subPropertyOf ex:o-property-sub-top ;
+	.
+

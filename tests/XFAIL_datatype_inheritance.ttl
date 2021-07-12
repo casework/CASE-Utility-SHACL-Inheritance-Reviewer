@@ -1,0 +1,85 @@
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:ClassA
+	sh:property ex:ClassA-property-typed-untyped ;
+	.
+
+ex:ClassA-property-typed-untyped
+	sh:datatype ex:datatype ;
+	sh:path ex:property-typed-untyped ;
+	.
+
+ex:ClassB
+	sh:property
+		ex:ClassB-property-untyped-typed-untyped ,
+		[
+			sh:path ex:property-typed-untyped ;
+		]
+		;
+	.
+
+ex:ClassB-property-untyped-typed-untyped
+	sh:datatype ex:datatype ;
+	sh:path ex:property-untyped-typed-untyped ;
+	.
+
+ex:ClassC
+	sh:property
+		[
+			sh:path ex:property-typed-untyped ;
+		] ,
+		[
+			sh:path ex:property-untyped-typed-untyped ;
+		]
+		;
+	.
+
+[]
+	a shir:InheritanceValidationReport ;
+	sh:conforms "false"^^xsd:boolean ;
+	sh:result
+		[
+			a shir:PropertyShapeComponentDroppedError-datatype ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:focusNode ex:ClassB ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor property shape (sh:sourceShape) dropped its sh:datatype." ;
+			sh:resultPath ex:property-typed-untyped ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassA-property-typed-untyped ;
+			sh:value [
+				sh:path ex:property-typed-untyped ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-datatype ;
+			rdfs:seeAlso ex:ClassA ;
+			sh:focusNode ex:ClassC ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor property shape (sh:sourceShape) dropped its sh:datatype." ;
+			sh:resultPath ex:property-typed-untyped ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassA-property-typed-untyped ;
+			sh:value [
+				sh:path ex:property-typed-untyped ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-datatype ;
+			rdfs:seeAlso ex:ClassB ;
+			sh:focusNode ex:ClassC ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor property shape (sh:sourceShape) dropped its sh:datatype." ;
+			sh:resultPath ex:property-untyped-typed-untyped ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassB-property-untyped-typed-untyped ;
+			sh:value [
+				sh:path ex:property-untyped-typed-untyped ;
+			] ;
+		]
+		;
+	.
+

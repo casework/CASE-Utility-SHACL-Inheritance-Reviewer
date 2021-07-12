@@ -1,0 +1,56 @@
+# baseURI: http://example.org/ontology/example
+
+@base <http://example.org/ontology/example/> .
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:ClassA
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	sh:property
+		[
+			sh:datatype ex:datatype ;
+			sh:path ex:property-typed ;
+		] ,
+		[
+			sh:path ex:property-untyped-typed ;
+		]
+		;
+	.
+
+ex:ClassB
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassA ;
+	sh:property
+		[
+			sh:datatype ex:datatype ;
+			sh:path ex:property-typed ;
+		] ,
+		[
+			sh:datatype ex:datatype ;
+			sh:path ex:property-untyped-typed ;
+		]
+		;
+	.
+
+ex:datatype
+	a rdfs:Datatype ;
+	.
+
+ex:property-typed
+	a owl:DatatypeProperty ;
+	.
+
+ex:property-untyped-typed
+	a owl:DatatypeProperty ;
+	.
+

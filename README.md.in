@@ -80,44 +80,13 @@ Note that as with CASE and UCO community practices, a Java jar file will be down
 SHACL, [at the time of this writing](https://www.w3.org/TR/2017/REC-shacl-20170720/), exhibits a behavior that might be unexpected from ontologists or data modelers used to working with class hierarchies.  A typical use case of SHACL node-shape (`sh:NodeShape`) definitions is to apply them to OWL Class (`owl:Class`) definitions.  For instance, we might have a class for a triangle, with a point and method to relate triangles and points:
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-ex:Triangle
-  a owl:Class ;
-  .
-
-ex:Point
-  a owl:Class ;
-  .
-
-ex:hasPoint
-  a owl:ObjectProperty ;
-  rdfs:domain ex:Triangle ;
-  rdfs:range ex:Point ;
-  .
+@EX_TRIANGLE_1_1_TTL@
 ```
 
 We further might want to specify that any instance of a `ex:Triangle` should have exactly three points.  The SHACL mechanism to specify this is a `sh:PropertyShape` constraint:
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-
-ex:Triangle
-  a sh:NodeShape ;
-  sh:property ex:PropertyShape-1 ;
-  sh:targetClass ex:Triangle ;
-  .
-
-ex:PropertyShape-1
-  a sh:PropertyShape ;
-  sh:path ex:hasPoint ;
-  sh:class ex:Point ;
-  sh:minCount 3 ;
-  sh:maxCount 3 ;
-  .
+@EX_TRIANGLE_1_2_TTL@
 ```
 
 (While it looks like the same specificaion can be made with `owl:Restriction` or `sh:PropertyShape`, their semantics differ significantly.  Discussion of semantic differences is left as out of scope of this repository.)
@@ -125,19 +94,7 @@ ex:PropertyShape-1
 The above two graphs can have their triples combined together without issue, and can even validate an instance of a triangle.  This example file, [`kb-triangle-1.ttl`](tests/kb-triangle-1.ttl), contains a sample triangle.
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix kb: <http://example.org/kb/> .
-
-kb:point-1 a ex:Point .
-kb:point-2 a ex:Point .
-kb:point-3 a ex:Point .
-
-kb:triangle-1
-  a ex:Triangle ;
-  ex:hasPoint kb:point-1 ;
-  ex:hasPoint kb:point-2 ;
-  ex:hasPoint kb:point-3 ;
-  .
+@KB_TRIANGLE_1_TTL@
 ```
 
 `pyshacl` will validate it against the combined example ontology.  The file [`kb-test-1.ttl`](tests/kb-test-1.ttl) is generated with this command (see the [Makefile](tests/Makefile) for the full build chain and longer flag names).
@@ -153,28 +110,13 @@ pyshacl \
 ```
 
 ```turtle
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-[] a sh:ValidationReport ;
-    sh:conforms true .
-
+@KB_TEST_1_TTL@
 ```
 
 Another example file, [`kb-triangle-2.ttl`](tests/kb-triangle-2.ttl), contains a sample invalid triangle, missing a third point:
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix kb: <http://example.org/kb/> .
-
-kb:point-4 a ex:Point .
-kb:point-5 a ex:Point .
-
-kb:triangle-2
-  a ex:Triangle ;
-  ex:hasPoint kb:point-4 ;
-  ex:hasPoint kb:point-5 ;
-  .
+@KB_TRIANGLE_2_TTL@
 ```
 
 ```bash
@@ -188,20 +130,7 @@ pyshacl \
 ```
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-[] a sh:ValidationReport ;
-    sh:conforms false ;
-    sh:result [ a sh:ValidationResult ;
-            sh:focusNode <http://example.org/kb/triangle-2> ;
-            sh:resultMessage "Less than 3 values on kb:triangle-2->ex:hasPoint" ;
-            sh:resultPath ex:hasPoint ;
-            sh:resultSeverity sh:Violation ;
-            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
-            sh:sourceShape ex:PropertyShape-1 ] .
-
+@KB_TEST_2_TTL@
 ```
 
 What might not be clear to modelers is that SHACL `sh:PropertyShape`s are not inherited with OWL or RDFS subclassing.  It is currently the understanding of the CASE and UCO communities that this is not an issue with any implementation of SHACL (such as `pyshacl`), but is instead an intended behavior of the SHACL specification.
@@ -209,44 +138,13 @@ What might not be clear to modelers is that SHACL `sh:PropertyShape`s are not in
 To demonstrate, say the above triangle ontology sees adoption by a plotting system, and the plotting system implements a feature that handles "Squishing" a triangle into a line by making two of its vertices into the same coordinate-set.  Say also their use case involves a memory-"slimming" feature and converts those two coordinate-sets into the same `ex:Point`.  Say---as a last point of contrivance---that a developer was not looking at the original `ex:Triangle` specification when they decided to add [`ex-triangle-2.ttl`](tests/ex-triangle-2.ttl) to their ontology:
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-
-ex:Triangle-but-1-dimensional
-  a
-    sh:NodeShape ,
-    owl:Class
-    ;
-  rdfs:subClassOf ex:Triangle ;
-  sh:property ex:PropertyShape-2 ;
-  sh:targetClass ex:Triangle-but-1-dimensional ;
-  .
-
-ex:PropertyShape-2
-  a sh:PropertyShape ;
-  sh:path ex:hasPoint ;
-  sh:class ex:Point ;
-  sh:minCount 2 ;
-  sh:maxCount 2 ;
-  .
+@EX_TRIANGLE_2_TTL@
 ```
 
 A modeler with the last few example-blocks fresh in their memory will spot the flaw immediately.  `ex:Triangle-but-1-dimensional` is also a `ex:Triangle`, explicitly so by the included statement `ex:Triangle-but-1-dimensional rdfs:subClassOf ex:Triangle .`, and thus must have exactly three `ex:Point`s.  However, a curious behavior occurs when evaluating this file, [`kb-triangle-3.ttl`](tests/kb-triangle-3.ttl).
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix kb: <http://example.org/kb/> .
-
-kb:point-6 a ex:Point .
-kb:point-7 a ex:Point .
-
-kb:triangle-3
-  a ex:Triangle-but-1-dimensional ;
-  ex:hasPoint kb:point-6 ;
-  ex:hasPoint kb:point-7 ;
-  .
+@KB_TRIANGLE_3_TTL@
 ```
 
 To the developer using the new ontology file, SHACL validation appears to function.
@@ -264,12 +162,7 @@ pyshacl \
 The contents of [`kb-test-3.ttl`](tests/kb-test-3.ttl) are:
 
 ```turtle
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-[] a sh:ValidationReport ;
-    sh:conforms true .
-
+@KB_TEST_3_TTL@
 ```
 
 But confusion arises when incorporating the superclass definition and `sh:PropertyShape`: `pyshacl` reports the instance is still valid, as shown in ([`kb-test-4.ttl`](tests/kb-test-4.ttl)).
@@ -285,12 +178,7 @@ pyshacl \
 ```
 
 ```turtle
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-[] a sh:ValidationReport ;
-    sh:conforms true .
-
+@KB_TEST_4_TTL@
 ```
 
 (That example, and further examples, use a combined ontology file [`ex-triangle.ttl`](tests/ex-triangle.ttl) to avoid any possible effects from partial ontology data.)
@@ -308,20 +196,7 @@ pyshacl \
 ```
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-[] a sh:ValidationReport ;
-    sh:conforms false ;
-    sh:result [ a sh:ValidationResult ;
-            sh:focusNode <http://example.org/kb/triangle-3> ;
-            sh:resultMessage "Less than 3 values on kb:triangle-3->ex:hasPoint" ;
-            sh:resultPath ex:hasPoint ;
-            sh:resultSeverity sh:Violation ;
-            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
-            sh:sourceShape ex:PropertyShape-1 ] .
-
+@KB_TEST_5_TTL@
 ```
 
 No applications of flags to `pyshacl` were found to handle this class inference (as demonstrated by the recipe for [`kb-test-6.ttl`](tests/kb-test-6.ttl)), so it is currently unclear whether this is intended to be a SHACL behavior or not.
@@ -339,53 +214,7 @@ case_shacl_inheritance_reviewer \
 ```
 
 ```turtle
-@prefix ex: <http://example.org/ontology/> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-ex:PropertyShape-1
-	a sh:PropertyShape ;
-	sh:class ex:Point ;
-	sh:maxCount "3"^^xsd:integer ;
-	sh:minCount "3"^^xsd:integer ;
-	sh:path ex:hasPoint ;
-	.
-
-ex:PropertyShape-2
-	a sh:PropertyShape ;
-	sh:class ex:Point ;
-	sh:maxCount "2"^^xsd:integer ;
-	sh:minCount "2"^^xsd:integer ;
-	sh:path ex:hasPoint ;
-	.
-
-ex:Triangle
-	sh:property ex:PropertyShape-1 ;
-	.
-
-ex:Triangle-but-1-dimensional
-	sh:property ex:PropertyShape-2 ;
-	.
-
-[]
-	a shir:InheritanceValidationReport ;
-	sh:conforms "false"^^xsd:boolean ;
-	sh:result [
-		a shir:PropertyShapeComponentBroadenedError-minCount ;
-		rdfs:seeAlso ex:Triangle ;
-		sh:focusNode ex:Triangle-but-1-dimensional ;
-		sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) has a lower sh:minCount." ;
-		sh:resultPath ex:hasPoint ;
-		sh:resultSeverity sh:Violation ;
-		sh:sourceShape ex:PropertyShape-1 ;
-		sh:value ex:PropertyShape-2 ;
-	] ;
-	.
-
+@EX_TRIANGLE_INHERITANCE_TTL@
 ```
 
 A taxonomy of error types has been developed and is stored in this repository at [`shacl-inheritance-review.ttl`](ontology/shacl-inheritance-review.ttl).  This ontology file is intended to spur discussion in the broader SHACL community, and to assist with implementation of the unit tests.  It is not currently intended to be a durable artifact, nor an attempt to claim the ontological prefix `shir:`.

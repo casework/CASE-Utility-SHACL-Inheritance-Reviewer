@@ -1,0 +1,14 @@
+@prefix ex: <http://example.org/ontology/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[] a sh:ValidationReport ;
+    sh:conforms false ;
+    sh:result [ a sh:ValidationResult ;
+            sh:focusNode <http://example.org/kb/triangle-2> ;
+            sh:resultMessage "Less than 3 values on kb:triangle-2->ex:hasPoint" ;
+            sh:resultPath ex:hasPoint ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape ex:PropertyShape-1 ] .
+

@@ -1,0 +1,111 @@
+@prefix ex: <http://example.org/ontology/example/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix shir: <http://example.org/ontology/shacl-inheritance-review/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+ex:ClassB
+	sh:property ex:ClassB-property-null-min-same-null ;
+	.
+
+ex:ClassB-property-null-min-same-null
+	sh:minCount "0"^^xsd:integer ;
+	sh:path ex:property-null-min-same-null ;
+	.
+
+ex:ClassC
+	sh:property
+		ex:ClassC-property-null-min-broader ,
+		ex:ClassC-property-null-min-null ,
+		ex:ClassC-property-null-min-same-null
+		;
+	.
+
+ex:ClassC-property-null-min-broader
+	sh:minCount "1"^^xsd:integer ;
+	sh:path ex:property-null-min-broader ;
+	.
+
+ex:ClassC-property-null-min-null
+	sh:minCount "0"^^xsd:integer ;
+	sh:path ex:property-null-min-null ;
+	.
+
+ex:ClassC-property-null-min-same-null
+	sh:minCount "0"^^xsd:integer ;
+	sh:path ex:property-null-min-same-null ;
+	.
+
+ex:ClassD
+	sh:property
+		[
+			sh:minCount "0"^^xsd:integer ;
+			sh:path ex:property-null-min-broader ;
+		] ,
+		[
+			sh:path ex:property-null-min-null ;
+		] ,
+		[
+			sh:path ex:property-null-min-same-null ;
+		]
+		;
+	.
+
+[]
+	a shir:InheritanceValidationReport ;
+	sh:conforms "false"^^xsd:boolean ;
+	sh:result
+		[
+			a shir:PropertyShapeComponentBroadenedError-minCount ;
+			rdfs:seeAlso ex:ClassC ;
+			sh:focusNode ex:ClassD ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) has a lower sh:minCount." ;
+			sh:resultPath ex:property-null-min-broader ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassC-property-null-min-broader ;
+			sh:value [
+				sh:minCount "0"^^xsd:integer ;
+				sh:path ex:property-null-min-broader ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-minCount ;
+			rdfs:seeAlso ex:ClassB ;
+			sh:focusNode ex:ClassD ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) dropped its sh:minCount." ;
+			sh:resultPath ex:property-null-min-same-null ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassB-property-null-min-same-null ;
+			sh:value [
+				sh:path ex:property-null-min-same-null ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-minCount ;
+			rdfs:seeAlso ex:ClassC ;
+			sh:focusNode ex:ClassD ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) dropped its sh:minCount." ;
+			sh:resultPath ex:property-null-min-null ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassC-property-null-min-null ;
+			sh:value [
+				sh:path ex:property-null-min-null ;
+			] ;
+		] ,
+		[
+			a shir:PropertyShapeComponentDroppedError-minCount ;
+			rdfs:seeAlso ex:ClassC ;
+			sh:focusNode ex:ClassD ;
+			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) dropped its sh:minCount." ;
+			sh:resultPath ex:property-null-min-same-null ;
+			sh:resultSeverity sh:Violation ;
+			sh:sourceShape ex:ClassC-property-null-min-same-null ;
+			sh:value [
+				sh:path ex:property-null-min-same-null ;
+			] ;
+		]
+		;
+	.
+

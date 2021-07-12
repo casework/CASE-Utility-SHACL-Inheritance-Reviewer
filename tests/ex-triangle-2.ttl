@@ -1,0 +1,22 @@
+@prefix ex: <http://example.org/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+ex:Triangle-but-1-dimensional
+  a
+    sh:NodeShape ,
+    owl:Class
+    ;
+  rdfs:subClassOf ex:Triangle ;
+  sh:property ex:PropertyShape-2 ;
+  sh:targetClass ex:Triangle-but-1-dimensional ;
+  .
+
+ex:PropertyShape-2
+  a sh:PropertyShape ;
+  sh:path ex:hasPoint ;
+  sh:class ex:Point ;
+  sh:minCount 2 ;
+  sh:maxCount 2 ;
+  .
