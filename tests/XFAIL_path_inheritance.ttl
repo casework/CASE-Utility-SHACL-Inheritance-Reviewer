@@ -71,33 +71,6 @@ ex:ClassD-property-top
 			sh:resultSeverity sh:Violation ;
 			sh:sourceShape ex:ClassB-property-sub-sub-top ;
 			sh:value ex:ClassC-property-top ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:focusNode ex:ClassC ;
-			sh:resultMessage "Subclass (sh:focusNode) is missing property shape (sh:sourceShape) from superclass, according to property in source's sh:path (sh:resultPath)." ;
-			sh:resultPath ex:property-sub-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:ClassA-property-sub-top ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:focusNode ex:ClassD ;
-			sh:resultMessage "Subclass (sh:focusNode) is missing property shape (sh:sourceShape) from superclass, according to property in source's sh:path (sh:resultPath)." ;
-			sh:resultPath ex:property-sub-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:ClassA-property-sub-top ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassB ;
-			sh:focusNode ex:ClassC ;
-			sh:resultMessage "Subclass (sh:focusNode) is missing property shape (sh:sourceShape) from superclass, according to property in source's sh:path (sh:resultPath)." ;
-			sh:resultPath ex:property-sub-sub-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:ClassB-property-sub-sub-top ;
 		]
 		;
 	.

@@ -128,14 +128,12 @@ check-cli-xfails: \
   .xfail-strict.done.log
 
 check-pytest: \
-  PASS_PropertyShape_inheritance.ttl \
   PASS_class_inheritance.ttl \
   PASS_datatype_inheritance.ttl \
   PASS_maxCount_inheritance.ttl \
   PASS_minCount_inheritance.ttl \
   PASS_path_inheritance.ttl \
   PASS_subprop_inheritance.ttl \
-  XFAIL_PropertyShape_inheritance.ttl \
   XFAIL_class_inheritance.ttl \
   XFAIL_datatype_inheritance.ttl \
   XFAIL_maxCount_inheritance.ttl \
