@@ -27,7 +27,8 @@ all: \
   kb-test-3.ttl \
   kb-test-4.ttl \
   kb-test-5.ttl \
-  kb-test-6.ttl
+  kb-test-6.ttl \
+  kb-test-7.ttl
 
 .PHONY: \
   check-cli-xfails \
@@ -147,7 +148,8 @@ check-pytest: \
   kb-test-3.ttl \
   kb-test-4.ttl \
   kb-test-5.ttl \
-  kb-test-6.ttl
+  kb-test-6.ttl \
+  kb-test-7.ttl
 	source venv/bin/activate \
 	  && pytest \
 	    --log-level=DEBUG \
@@ -288,13 +290,34 @@ kb-test-6.ttl: \
   kb-triangle-3.ttl
 	source venv/bin/activate \
 	  && pyshacl \
+	    --data-file-format turtle \
+	    --format turtle \
+	    --ont-file-format turtle \
+	    --ont-graph ex-triangle.ttl \
+	    --output _$@ \
+	    --shacl ex-triangle.ttl \
+	    --shacl-file-format turtle \
+	    kb-triangle-3.ttl \
+	    || true    #xfail
+	mv _$@ $@
+
+kb-test-7.ttl: \
+  .venv.done.log \
+  ex-triangle.ttl \
+  kb-triangle-3.ttl
+	source venv/bin/activate \
+	  && pyshacl \
 	    --advanced \
 	    --data-file-format turtle \
 	    --format turtle \
 	    --inference both \
 	    --iterate-rules \
+	    --metashacl \
+	    --ont-file-format turtle \
+	    --ont-graph ex-triangle.ttl \
 	    --output _$@ \
 	    --shacl ex-triangle.ttl \
 	    --shacl-file-format turtle \
-	    kb-triangle-3.ttl
+	    kb-triangle-3.ttl \
+	    || true    #xfail
 	mv _$@ $@
