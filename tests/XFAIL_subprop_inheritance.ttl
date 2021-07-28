@@ -205,24 +205,6 @@ ex:propertyShape-ObjectProperty-narrowest
 			sh:resultSeverity sh:Violation ;
 			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
 			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassB ;
-			sh:focusNode ex:ClassC ;
-			sh:resultMessage "Subclass (sh:focusNode) is missing property shape (sh:sourceShape) from superclass, according to property in source's sh:path (sh:resultPath)." ;
-			sh:resultPath ex:d-property-sub-sub-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-middle ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassE ;
-			sh:focusNode ex:ClassF ;
-			sh:resultMessage "Subclass (sh:focusNode) is missing property shape (sh:sourceShape) from superclass, according to property in source's sh:path (sh:resultPath)." ;
-			sh:resultPath ex:o-property-sub-sub-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-middle ;
 		]
 		;
 	.

@@ -81,38 +81,6 @@ def main():
     #   1: SPARQL query to find all applicable instances for error message.
     error_class_iri_to_message_and_query = dict()
 
-    message_string = "Subclass (sh:focusNode) is missing property shape (sh:sourceShape) from superclass, according to property in source's sh:path (sh:resultPath)."
-    query_string = """\
-SELECT ?nClassNodeShape ?nClassPropertyShape ?nClassPropertyShapePath ?nSuperclassNodeShape ?nSuperclassPropertyShape ?nSuperclassPropertyShapePath
-WHERE {
-  ?nSuperclassNodeShape
-    a owl:Class ;
-    a sh:NodeShape ;
-    sh:property ?nSuperclassPropertyShape ;
-    .
-
-  ?nClassNodeShape
-    a owl:Class ;
-    a sh:NodeShape ;
-    rdfs:subClassOf+ ?nSuperclassNodeShape ;
-    .
-
-  ?nSuperclassPropertyShape
-    sh:path ?nSuperclassPropertyShapePath ;
-    .
-
-  FILTER NOT EXISTS {
-    ?nClassNodeShape
-      sh:property/sh:path ?nClassPropertyShapePath ;
-      .
-    ?nClassPropertyShapePath
-      rdfs:subPropertyOf* ?nSuperclassPropertyShapePath ;
-      .
-  }
-}
-"""
-    error_class_iri_to_message_and_query[str(NS_SHIR["PropertyShapeDroppedError"])] = (message_string, query_string)
-
     message_string = "Subclass (sh:focusNode) has property shape (sh:value) of ancestor class (rdfs:seeAlso) that has sh:path to superproperty of ancestor class's property shape (sh:sourceShape)."
     query_string = """\
 SELECT ?nClassNodeShape ?nClassPropertyShape ?nClassPropertyShapePath ?nSuperclassNodeShape ?nSuperclassPropertyShape ?nSuperclassPropertyShapePath

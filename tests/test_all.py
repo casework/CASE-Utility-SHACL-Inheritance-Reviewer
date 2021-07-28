@@ -72,8 +72,7 @@ def test_coverage():
       str(NS_SHIR["PropertyShapeComponentDroppedError-class"]),
       str(NS_SHIR["PropertyShapeComponentDroppedError-datatype"]),
       str(NS_SHIR["PropertyShapeComponentDroppedError-maxCount"]),
-      str(NS_SHIR["PropertyShapeComponentDroppedError-minCount"]),
-      str(NS_SHIR["PropertyShapeDroppedError"])
+      str(NS_SHIR["PropertyShapeComponentDroppedError-minCount"])
     }
     computed = set()
 
@@ -233,10 +232,6 @@ def test_kb_test_7():
     assert isinstance(g, rdflib.Graph)
     raise NotImplementedError("Test lacking exemplar for reporting ontology-level error.")
 
-def test_pass_PropertyShape():
-    g = load_and_check_graph("PASS_PropertyShape_inheritance.ttl", True)
-    assert isinstance(g, rdflib.Graph)
-
 def test_pass_class():
     g = load_and_check_graph("PASS_class_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
@@ -260,9 +255,6 @@ def test_pass_path():
 def test_pass_subprop():
     g = load_and_check_graph("PASS_path_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
-
-def test_xfail_PropertyShape_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_PropertyShape_ontology.ttl", "XFAIL_PropertyShape_inheritance.ttl")
 
 def test_xfail_class_inheritance():
     _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_class_ontology.ttl", "XFAIL_class_inheritance.ttl")

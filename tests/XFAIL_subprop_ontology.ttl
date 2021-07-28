@@ -82,12 +82,6 @@ ex:ClassC
 			sh:resultPath ex:d-property-top ;
 			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
 			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassB ;
-			sh:resultPath ex:d-property-sub-sub-top ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-middle ;
 		]
 		;
 	.
@@ -167,12 +161,6 @@ ex:ClassF
 			sh:resultPath ex:o-property-top ;
 			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
 			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassE ;
-			sh:resultPath ex:o-property-sub-sub-top ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-middle
 		]
 		;
 	.

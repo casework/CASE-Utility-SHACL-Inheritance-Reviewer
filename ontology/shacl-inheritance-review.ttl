@@ -103,11 +103,6 @@ shir:PropertyShapeComponentDroppedError-minCount
 	shir:reviews sh:minCount ;
 	.
 
-shir:PropertyShapeDroppedError
-	a owl:Class ;
-	rdfs:subClassOf shir:ShapeBroadenedError ;
-	.
-
 shir:ShapeBroadenedError
 	a owl:Class ;
 	rdfs:subClassOf sh:ValidationResult ;
