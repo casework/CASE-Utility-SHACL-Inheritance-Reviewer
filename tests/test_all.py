@@ -36,7 +36,7 @@ def load_and_check_graph(
 ) -> rdflib.Graph:
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
-    graph.load(graph_filepath, format="turtle")
+    graph.parse(graph_filepath, format="turtle")
     conforms = None
     for triple in graph.triples((None, NS_SH.conforms, None)):
         assert conforms is None, "Found second result."
@@ -57,7 +57,7 @@ def load_ontology_graph(
 ) -> rdflib.Graph:
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
-    graph.load(graph_filepath, format="turtle")
+    graph.parse(graph_filepath, format="turtle")
     return graph
 
 def test_coverage():
@@ -72,8 +72,7 @@ def test_coverage():
       str(NS_SHIR["PropertyShapeComponentDroppedError-class"]),
       str(NS_SHIR["PropertyShapeComponentDroppedError-datatype"]),
       str(NS_SHIR["PropertyShapeComponentDroppedError-maxCount"]),
-      str(NS_SHIR["PropertyShapeComponentDroppedError-minCount"]),
-      str(NS_SHIR["PropertyShapeDroppedError"])
+      str(NS_SHIR["PropertyShapeComponentDroppedError-minCount"])
     }
     computed = set()
 
@@ -217,7 +216,7 @@ def test_kb_test_3():
     assert isinstance(g, rdflib.Graph)
 
 def test_kb_test_4():
-    g = load_and_check_graph("kb-test-4.ttl", False, "When this was written, pyshacl was known to disagree with test developer's subclass--shape expectations.")
+    g = load_and_check_graph("kb-test-4.ttl", False, "When this was written, pyshacl was known to disagree with test developer's subclass--shape expectations from combined shapes+ontology file.")
     assert isinstance(g, rdflib.Graph)
 
 def test_kb_test_5():
@@ -225,12 +224,13 @@ def test_kb_test_5():
     assert isinstance(g, rdflib.Graph)
 
 def test_kb_test_6():
-    g = load_and_check_graph("kb-test-6.ttl", False, "When this was written, pyshacl was known to disagree with test developer's subclass--shape expectations.")
+    g = load_and_check_graph("kb-test-6.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
-def test_pass_PropertyShape():
-    g = load_and_check_graph("PASS_PropertyShape_inheritance.ttl", True)
+def test_kb_test_7():
+    g = load_and_check_graph("kb-test-7.ttl", False, "When this was written, pyshacl was known to not report ontology-level errors before reporting instance data-level errors.")
     assert isinstance(g, rdflib.Graph)
+    raise NotImplementedError("Test lacking exemplar for reporting ontology-level error.")
 
 def test_pass_class():
     g = load_and_check_graph("PASS_class_inheritance.ttl", True)
@@ -255,9 +255,6 @@ def test_pass_path():
 def test_pass_subprop():
     g = load_and_check_graph("PASS_path_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
-
-def test_xfail_PropertyShape_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_PropertyShape_ontology.ttl", "XFAIL_PropertyShape_inheritance.ttl")
 
 def test_xfail_class_inheritance():
     _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_class_ontology.ttl", "XFAIL_class_inheritance.ttl")

@@ -204,7 +204,10 @@ pyshacl \
 
 ```
 
-What might not be clear to modelers is that SHACL `sh:PropertyShape`s are not inherited with OWL or RDFS subclassing.  It is currently the understanding of the CASE and UCO communities that this is not an issue with any implementation of SHACL (such as `pyshacl`), but is instead an intended behavior of the SHACL specification.
+What might not be clear to modelers is that SHACL `sh:PropertyShape`s can appear to not be inherited with OWL or RDFS subclassing.  This potential confusion has been found to be an indirect result of a distinction some SHACL implementations may make between "Shape graphs" and "Ontology graphs".  This documentation is based on experiences of the CASE and UCO communities with the `pyshacl` implementation.
+
+
+### Confusion demonstration
 
 To demonstrate, say the above triangle ontology sees adoption by a plotting system, and the plotting system implements a feature that handles "Squishing" a triangle into a line by making two of its vertices into the same coordinate-set.  Say also their use case involves a memory-"slimming" feature and converts those two coordinate-sets into the same `ex:Point`.  Say---as a last point of contrivance---that a developer was not looking at the original `ex:Triangle` specification when they decided to add [`ex-triangle-2.ttl`](tests/ex-triangle-2.ttl) to their ontology:
 
@@ -249,7 +252,7 @@ kb:triangle-3
   .
 ```
 
-To the developer using the new ontology file, SHACL validation appears to function.
+To the developer using only the new ontology file, SHACL validation appears to function.
 
 ```bash
 pyshacl \
@@ -324,11 +327,51 @@ pyshacl \
 
 ```
 
-No applications of flags to `pyshacl` were found to handle this class inference (as demonstrated by the recipe for [`kb-test-6.ttl`](tests/kb-test-6.ttl)), so it is currently unclear whether this is intended to be a SHACL behavior or not.
+There is a point of potential confusion to the end `pyshacl` user, on whether that "Reminder" triple needs to be added to their data graph.  According to [this Issue comment](https://github.com/RDFLib/pySHACL/issues/14#issue-396214221), such subclass information should not be necessary in the data graph, but it would be considered "ontological information".  It is not currently clear to the CASE or UCO communities why such ontological information is not recognized in the SHACL shapes graph when present, especially whether this is a `pyshacl`-level issue or a SHACL specification-level issue.
 
-Unfortunately, it will not always be practical or possible to place the demand on users that they generate data in manners that annotate all objects with all superclasses made explicit.
 
-The solution the CASE and UCO communities are taking to address this issue is propagating shapes from classes to all their subclasses, which unfortunately can be manually intensive and error-prone.  Hence, this project came to be, to affirm that shapes of subclasses do not expand the set of accepted data patterns beyond superclass constraints.
+### Usage resolution
+
+When a SHACL shapes graph is also used to store ontology information (such as subclass relationships), `pyshacl` is capable of using that graph to make class hierarchy inferences, but *not* when treating the graph as a shapes graph.  The ontology must be passed as both the `--shacl` argument (`-s`) to be treated as a shapes graph, and the `--ont-graph` argument (`-e`) to be treated as the ontology graph:
+
+```bash
+pyshacl \
+  -df turtle \
+  -ef turtle \
+  -f turtle \
+  -sf turtle \
+  -o kb-test-6.ttl \
+  -s ex-triangle.ttl \
+  -e ex-triangle.ttl \
+  kb-triangle-3.ttl
+```
+
+```turtle
+@prefix ex: <http://example.org/ontology/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+[] a sh:ValidationReport ;
+    sh:conforms false ;
+    sh:result [ a sh:ValidationResult ;
+            sh:focusNode <http://example.org/kb/triangle-3> ;
+            sh:resultMessage "Less than 3 values on kb:triangle-3->ex:hasPoint" ;
+            sh:resultPath ex:hasPoint ;
+            sh:resultSeverity sh:Violation ;
+            sh:sourceConstraintComponent sh:MinCountConstraintComponent ;
+            sh:sourceShape ex:PropertyShape-1 ] .
+
+```
+
+### Inspection of property shapes and subclasses
+
+The outstanding concern the present repository addresses is a quality control matter at the ontology level.  The above dual-flag treatment catches an ontology error at the time of instance data validation.  An ontology shipping and waiting to find this in instance data is analagous to finding a bug from an application run-time error rather than a compile-time error.
+
+No applications of flags to `pyshacl` were found to be able to detect that the definition of `ex:Triangle-but-1-dimensional` is unsatisfiable in light of its subclass relationships and cross-purposed `sh:PropertyShape`s.  (The recipe for [`kb-test-7.ttl`](tests/kb-test-7.ttl) attempts to exercise all flags from the `pyshacl` help menu.  No ontology-level error is reported.)  It is unclear whether the SHACL specification provides a mechanism to detect this.
+
+The solution the CASE and UCO communities are taking to address this issue is inspecting how all `sh:PropertyShape`s on a class relate to `sh:PropertyShape`s on all superclasses.  This project affirms that shapes of subclasses do not *expand* the set of accepted data patterns beyond superclass constraints.
+
+(This project was originally written to support a solution that the CASE and UCO communities previously believed was necessary, based on the misunderstanding of whether `sh:PropertyShape`s would be implicitly applied to subclasses.  Believing they *weren't*, UCO initially prepared a framework to propagate `sh:PropertyShape` copies to all subclasses, inspiring this project as an automated review system.  Gratefully, the copying is now understood and demonstrated to not be necessary.  However, the other `sh:PropertyShape` subclass-superclass interaction review has proven worth retaining.)
 
 To demonstrate that the above triangle inconsistency is detected, the following shell transcript reports the inconsistencies similar to how a `sh:ValidationReport` would do so for instance data.
 
