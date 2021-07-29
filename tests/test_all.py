@@ -36,7 +36,7 @@ def load_and_check_graph(
 ) -> rdflib.Graph:
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
-    graph.load(graph_filepath, format="turtle")
+    graph.parse(graph_filepath, format="turtle")
     conforms = None
     for triple in graph.triples((None, NS_SH.conforms, None)):
         assert conforms is None, "Found second result."
@@ -57,7 +57,7 @@ def load_ontology_graph(
 ) -> rdflib.Graph:
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
-    graph.load(graph_filepath, format="turtle")
+    graph.parse(graph_filepath, format="turtle")
     return graph
 
 def test_coverage():
