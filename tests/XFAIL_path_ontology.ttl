@@ -47,12 +47,6 @@ ex:ClassC
 	sh:property ex:ClassC-property-top ;
 	shir:shouldTriggerBroadeningError
 		[
-			a shir:PropertyShapeDroppedError ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:resultPath ex:property-sub-top ;
-			sh:sourceShape ex:ClassA-property-sub-top ;
-		] ,
-		[
 			a shir:PropertyShapeComponentBroadenedError-path ;
 			rdfs:seeAlso ex:ClassA ;
 			sh:resultPath ex:property-sub-top ;
@@ -60,12 +54,6 @@ ex:ClassC
 		] ,
 		[
 			a shir:PropertyShapeComponentBroadenedError-path ;
-			rdfs:seeAlso ex:ClassB ;
-			sh:resultPath ex:property-sub-sub-top ;
-			sh:sourceShape ex:ClassB-property-sub-sub-top ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
 			rdfs:seeAlso ex:ClassB ;
 			sh:resultPath ex:property-sub-sub-top ;
 			sh:sourceShape ex:ClassB-property-sub-sub-top ;
@@ -83,12 +71,6 @@ ex:ClassD
 	shir:shouldTriggerBroadeningError
 		[
 			a shir:PropertyShapeComponentBroadenedError-path ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:resultPath ex:property-sub-top ;
-			sh:sourceShape ex:ClassA-property-sub-top ;
-		] ,
-		[
-			a shir:PropertyShapeDroppedError ;
 			rdfs:seeAlso ex:ClassA ;
 			sh:resultPath ex:property-sub-top ;
 			sh:sourceShape ex:ClassA-property-sub-top ;

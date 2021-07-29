@@ -36,6 +36,9 @@
 /@KB_TEST_5_TTL@/r tests/kb-test-5.ttl
 /@KB_TEST_5_TTL@/d
 
+/@KB_TEST_6_TTL@/r tests/kb-test-6.ttl
+/@KB_TEST_6_TTL@/d
+
 /@KB_TRIANGLE_1_TTL@/r tests/kb-triangle-1.ttl
 /@KB_TRIANGLE_1_TTL@/d
 
