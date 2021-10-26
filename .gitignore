@@ -5,4 +5,5 @@
 .generated-*
 .pytest_cache
 __pycache__
+build
 catalog-v001.xml
