@@ -28,7 +28,8 @@ all: \
   kb-test-4.ttl \
   kb-test-5.ttl \
   kb-test-6.ttl \
-  kb-test-7.ttl
+  kb-test-7.ttl \
+  kb-test-8.ttl
 
 .PHONY: \
   check-cli-xfails \
@@ -156,7 +157,8 @@ check-pytest: \
   kb-test-4.ttl \
   kb-test-5.ttl \
   kb-test-6.ttl \
-  kb-test-7.ttl
+  kb-test-7.ttl \
+  kb-test-8.ttl
 	source venv/bin/activate \
 	  && pytest \
 	    --log-level=DEBUG \
@@ -327,4 +329,30 @@ kb-test-7.ttl: \
 	    --shacl-file-format turtle \
 	    kb-triangle-3.ttl \
 	    || true    #xfail
+	mv _$@ $@
+
+# Normalize at least this file due to sort order not being guaranteed.
+kb-test-8.ttl: \
+  .venv.done.log \
+  ex-constraint-repetition.ttl \
+  kb-triangle-4.ttl
+	source venv/bin/activate \
+	  && pyshacl \
+	    --data-file-format turtle \
+	    --format turtle \
+	    --ont-file-format turtle \
+	    --ont-graph ex-constraint-repetition.ttl \
+	    --output __$@ \
+	    --shacl ex-constraint-repetition.ttl \
+	    --shacl-file-format turtle \
+	    kb-triangle-4.ttl \
+	    || true    #xfail
+	java -jar $(rdf_toolkit_jar) \
+	  --infer-base-iri \
+	  --inline-blank-nodes \
+	  --source __$@ \
+	  --source-format turtle \
+	  --target _$@ \
+	  --target-format turtle
+	rm __$@
 	mv _$@ $@
