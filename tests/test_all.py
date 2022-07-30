@@ -38,9 +38,10 @@ def load_and_check_graph(
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
     graph.parse(graph_filepath, format="turtle")
-    conforms = None
+    conforms: typing.Optional[bool] = None
     for triple in graph.triples((None, NS_SH.conforms, None)):
         assert conforms is None, "Found second result."
+        assert isinstance(triple[2], rdflib.Literal)
         conforms = triple[2].toPython()
 
     if conformance_mismatch_expectation is None:
@@ -256,7 +257,7 @@ def test_kb_test_6():
     assert isinstance(g, rdflib.Graph)
 
 
-def test_kb_test_7():
+def test_kb_test_7() -> None:
     g = load_and_check_graph(
         "kb-test-7.ttl",
         False,

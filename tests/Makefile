@@ -119,6 +119,7 @@ $(top_srcdir)/.lib.done.log:
 	touch $@
 
 check: \
+  check-mypy \
   check-cli-xfails \
   check-pytest
 
@@ -126,6 +127,13 @@ check: \
 check-cli-xfails: \
   .xfail-out_graph.done.log \
   .xfail-strict.done.log
+
+check-mypy: \
+  .venv.done.log
+	source venv/bin/activate \
+	  && mypy \
+	    --exclude venv \
+	    .
 
 check-pytest: \
   PASS_class_inheritance.ttl \
