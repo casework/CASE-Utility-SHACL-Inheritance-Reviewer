@@ -71,10 +71,6 @@ def test_coverage() -> None:
         str(NS_SHIR["PropertyShapeComponentBroadenedError-maxCount"]),
         str(NS_SHIR["PropertyShapeComponentBroadenedError-minCount"]),
         str(NS_SHIR["PropertyShapeComponentBroadenedError-path"]),
-        str(NS_SHIR["PropertyShapeComponentDroppedError-class"]),
-        str(NS_SHIR["PropertyShapeComponentDroppedError-datatype"]),
-        str(NS_SHIR["PropertyShapeComponentDroppedError-maxCount"]),
-        str(NS_SHIR["PropertyShapeComponentDroppedError-minCount"]),
     }
     computed = set()
 
@@ -302,12 +298,6 @@ def test_pass_subprop() -> None:
 def test_xfail_class_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_class_ontology.ttl", "XFAIL_class_inheritance.ttl"
-    )
-
-
-def test_xfail_datatype_inheritance() -> None:
-    _test_inheritance_xfail_from_inlined_ground_truth(
-        "XFAIL_datatype_ontology.ttl", "XFAIL_datatype_inheritance.ttl"
     )
 
 

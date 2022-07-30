@@ -61,27 +61,6 @@ ex:ClassC
 			sh:resultPath ex:d-property-sub-sub-top ;
 			sh:sourceShape ex:propertyShape-DatatypeProperty-middle ;
 			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-datatype ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:resultPath ex:d-property-top ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
-			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:resultPath ex:d-property-top ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
-			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:resultPath ex:d-property-top ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
-			sh:value ex:propertyShape-DatatypeProperty-broadest ;
 		]
 		;
 	.
@@ -133,36 +112,13 @@ ex:ClassF
 		;
 	rdfs:subClassOf ex:ClassE ;
 	sh:property ex:propertyShape-ObjectProperty-broadest ;
-	shir:shouldTriggerBroadeningError
-		[
-			a shir:PropertyShapeComponentBroadenedError-path ;
-			rdfs:seeAlso ex:ClassE ;
-			sh:resultPath ex:o-property-sub-sub-top ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-middle ;
-			sh:value ex:propertyShape-ObjectProperty-broadest
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-class ;
-			rdfs:seeAlso ex:ClassD ;
-			sh:resultPath ex:o-property-top ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
-			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassD ;
-			sh:resultPath ex:o-property-top ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
-			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassD ;
-			sh:resultPath ex:o-property-top ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
-			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		]
-		;
+	shir:shouldTriggerBroadeningError [
+		a shir:PropertyShapeComponentBroadenedError-path ;
+		rdfs:seeAlso ex:ClassE ;
+		sh:resultPath ex:o-property-sub-sub-top ;
+		sh:sourceShape ex:propertyShape-ObjectProperty-middle ;
+		sh:value ex:propertyShape-ObjectProperty-broadest
+	] ;
 	.
 
 ex:ClassX
