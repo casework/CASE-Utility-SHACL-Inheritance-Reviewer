@@ -16,6 +16,7 @@ __version__ = "0.2.0"
 import argparse
 import logging
 import os
+import typing
 
 import rdflib.plugins.sparql
 import rdflib.util
@@ -32,7 +33,7 @@ class ConformanceError(Exception):
     pass
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action="store_true")
     parser.add_argument(
@@ -56,7 +57,7 @@ def main():
             "File found where output graph was going to be written.  Please ensure first positional argument is a currently non-existent output file."
         )
 
-    logging_kwargs = dict()
+    logging_kwargs: typing.Dict[str, typing.Any] = dict()
     logging_kwargs["level"] = logging.DEBUG if args.debug else logging.INFO
     logging_kwargs["format"] = (
         "%(asctime)s:" + logging.BASIC_FORMAT if args.verbose else logging.BASIC_FORMAT
@@ -416,7 +417,9 @@ WHERE {
         ]
 
         _logger.debug("Compiling query...")
-        query_object = rdflib.plugins.sparql.prepareQuery(query_string, initNs=nsdict)
+        query_object = rdflib.plugins.sparql.processor.prepareQuery(
+            query_string, initNs=nsdict
+        )
         _logger.debug("Compiled.")
 
         reported_first_result = False
@@ -506,7 +509,11 @@ WHERE {
     # Report (extended) conformance.
     out_graph.add((n_report, NS_SH.conforms, rdflib.Literal(results_tally == 0)))
 
-    out_graph.serialize(args.out_graph, rdflib.util.guess_format(args.out_graph))
+    serialize_kwargs: typing.Dict[str, typing.Any] = dict()
+    out_format = rdflib.util.guess_format(args.out_graph)
+    if out_format is not None:
+        serialize_kwargs["format"] = out_format
+    out_graph.serialize(args.out_graph, **serialize_kwargs)
 
     if results_tally != 0:
         count_message = (

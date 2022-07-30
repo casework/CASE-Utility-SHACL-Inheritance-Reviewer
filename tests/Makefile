@@ -134,6 +134,7 @@ check-mypy: \
 	  && mypy \
 	    --exclude venv \
 	    --strict \
+	    $(top_srcdir)/case_shacl_inheritance_reviewer \
 	    .
 
 check-pytest: \
