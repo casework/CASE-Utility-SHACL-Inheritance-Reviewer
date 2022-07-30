@@ -265,6 +265,21 @@ def test_kb_test_7() -> None:
         pytest.xfail("Test lacking exemplar for reporting ontology-level error.")
 
 
+def test_kb_test_8() -> None:
+    """
+    Confirm both source shapes are referenced in the SHACL validation results.
+    """
+    expected: int = 2
+    computed: int
+
+    g = load_and_check_graph("kb-test-8.ttl", False)
+    assert isinstance(g, rdflib.Graph)
+
+    computed = len(set(g.triples((None, NS_SH.sourceShape, None))))
+
+    assert expected == computed
+
+
 def test_pass_class() -> None:
     g = load_and_check_graph("PASS_class_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
