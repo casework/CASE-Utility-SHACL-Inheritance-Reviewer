@@ -4,6 +4,7 @@
 *.swp
 .generated-*
 .pytest_cache
+.venv-pre-commit
 __pycache__
 build
 catalog-v001.xml
