@@ -133,6 +133,7 @@ check-mypy: \
 	source venv/bin/activate \
 	  && mypy \
 	    --exclude venv \
+	    --strict \
 	    .
 
 check-pytest: \

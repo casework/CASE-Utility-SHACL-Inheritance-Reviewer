@@ -62,7 +62,7 @@ def load_ontology_graph(basename: str) -> rdflib.Graph:
     return graph
 
 
-def test_coverage():
+def test_coverage() -> None:
     # Ground truth:
     # * There is an expected set of IRIs of error classes emitted by the reports.
     expected = {
@@ -90,7 +90,7 @@ def test_coverage():
         tmp_graph = load_and_check_graph(basename, False)
         graph += tmp_graph
 
-    query = rdflib.plugins.sparql.prepareQuery(
+    query = rdflib.plugins.sparql.processor.prepareQuery(
         """\
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX shir: <http://example.org/ontology/shacl-inheritance-review/>
@@ -126,13 +126,13 @@ WHERE {
 
 def _test_inheritance_xfail_from_inlined_ground_truth(
     ontology_basename: str, inheritance_basename: str
-):
+) -> None:
     ontology_graph = load_ontology_graph(ontology_basename)
     inheritance_graph = load_and_check_graph(inheritance_basename, False)
     expected = set()
     computed = set()
 
-    expected_query = rdflib.plugins.sparql.prepareQuery(
+    expected_query = rdflib.plugins.sparql.processor.prepareQuery(
         """\
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX shir: <http://example.org/ontology/shacl-inheritance-review/>
@@ -179,7 +179,7 @@ WHERE {
             )
         )
 
-    computed_query = rdflib.plugins.sparql.prepareQuery(
+    computed_query = rdflib.plugins.sparql.processor.prepareQuery(
         """\
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX shir: <http://example.org/ontology/shacl-inheritance-review/>
@@ -223,22 +223,22 @@ WHERE {
     assert expected == computed
 
 
-def test_kb_test_1():
+def test_kb_test_1() -> None:
     g = load_and_check_graph("kb-test-1.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_kb_test_2():
+def test_kb_test_2() -> None:
     g = load_and_check_graph("kb-test-2.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_kb_test_3():
+def test_kb_test_3() -> None:
     g = load_and_check_graph("kb-test-3.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_kb_test_4():
+def test_kb_test_4() -> None:
     g = load_and_check_graph(
         "kb-test-4.ttl",
         False,
@@ -247,12 +247,12 @@ def test_kb_test_4():
     assert isinstance(g, rdflib.Graph)
 
 
-def test_kb_test_5():
+def test_kb_test_5() -> None:
     g = load_and_check_graph("kb-test-5.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_kb_test_6():
+def test_kb_test_6() -> None:
     g = load_and_check_graph("kb-test-6.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
@@ -269,72 +269,72 @@ def test_kb_test_7() -> None:
         pytest.xfail("Test lacking exemplar for reporting ontology-level error.")
 
 
-def test_pass_class():
+def test_pass_class() -> None:
     g = load_and_check_graph("PASS_class_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_pass_datatype():
+def test_pass_datatype() -> None:
     g = load_and_check_graph("PASS_datatype_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_pass_maxCount():
+def test_pass_maxCount() -> None:
     g = load_and_check_graph("PASS_maxCount_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_pass_minCount():
+def test_pass_minCount() -> None:
     g = load_and_check_graph("PASS_minCount_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_pass_path():
+def test_pass_path() -> None:
     g = load_and_check_graph("PASS_path_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_pass_subprop():
+def test_pass_subprop() -> None:
     g = load_and_check_graph("PASS_path_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
 
-def test_xfail_class_inheritance():
+def test_xfail_class_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_class_ontology.ttl", "XFAIL_class_inheritance.ttl"
     )
 
 
-def test_xfail_datatype_inheritance():
+def test_xfail_datatype_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_datatype_ontology.ttl", "XFAIL_datatype_inheritance.ttl"
     )
 
 
-def test_xfail_maxCount_inheritance():
+def test_xfail_maxCount_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_maxCount_ontology.ttl", "XFAIL_maxCount_inheritance.ttl"
     )
 
 
-def test_xfail_minCount_inheritance():
+def test_xfail_minCount_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_minCount_ontology.ttl", "XFAIL_minCount_inheritance.ttl"
     )
 
 
-def test_xfail_path_inheritance():
+def test_xfail_path_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_path_ontology.ttl", "XFAIL_path_inheritance.ttl"
     )
 
 
-def test_xfail_subprop_inheritance():
+def test_xfail_subprop_inheritance() -> None:
     _test_inheritance_xfail_from_inlined_ground_truth(
         "XFAIL_subprop_ontology.ttl", "XFAIL_subprop_inheritance.ttl"
     )
 
 
-def test_ex_triangle_inheritance():
+def test_ex_triangle_inheritance() -> None:
     g = load_and_check_graph("ex-triangle-inheritance.ttl", False)
     assert isinstance(g, rdflib.Graph)
