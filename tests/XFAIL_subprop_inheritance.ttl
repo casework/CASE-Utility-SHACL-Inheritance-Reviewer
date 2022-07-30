@@ -145,66 +145,6 @@ ex:propertyShape-ObjectProperty-narrowest
 			sh:resultSeverity sh:Violation ;
 			sh:sourceShape ex:propertyShape-ObjectProperty-middle ;
 			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-class ;
-			rdfs:seeAlso ex:ClassD ;
-			sh:focusNode ex:ClassF ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) corresponding with an ancestor class's (rdfs:seeAlso) property shape (sh:sourceShape).  But, the subclass's property shape is missing its sh:class." ;
-			sh:resultPath ex:o-property-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
-			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-datatype ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:focusNode ex:ClassC ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor property shape (sh:sourceShape) dropped its sh:datatype." ;
-			sh:resultPath ex:d-property-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
-			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:focusNode ex:ClassC ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor property shape (sh:sourceShape) dropped its maxCount." ;
-			sh:resultPath ex:d-property-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
-			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassD ;
-			sh:focusNode ex:ClassF ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor property shape (sh:sourceShape) dropped its maxCount." ;
-			sh:resultPath ex:o-property-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
-			sh:value ex:propertyShape-ObjectProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:focusNode ex:ClassC ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) dropped its sh:minCount." ;
-			sh:resultPath ex:d-property-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-DatatypeProperty-narrowest ;
-			sh:value ex:propertyShape-DatatypeProperty-broadest ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassD ;
-			sh:focusNode ex:ClassF ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) from ancestor class (rdfs:seeAlso), but according to ancestor's property shape (sh:sourceShape) dropped its sh:minCount." ;
-			sh:resultPath ex:o-property-top ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:propertyShape-ObjectProperty-narrowest ;
-			sh:value ex:propertyShape-ObjectProperty-broadest ;
 		]
 		;
 	.
