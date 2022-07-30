@@ -38,12 +38,6 @@ ex:ClassD
 	] ;
 	.
 
-ex:ClassE
-	sh:property [
-		sh:path ex:property ;
-	] ;
-	.
-
 []
 	a shir:InheritanceValidationReport ;
 	sh:conforms "false"^^xsd:boolean ;
@@ -84,18 +78,6 @@ ex:ClassE
 			sh:sourceShape ex:ClassB-property ;
 			sh:value [
 				sh:class ex:Class-top ;
-				sh:path ex:property ;
-			] ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-class ;
-			rdfs:seeAlso ex:ClassA ;
-			sh:focusNode ex:ClassE ;
-			sh:resultMessage "Subclass (sh:focusNode) has property shape (sh:value) corresponding with an ancestor class's (rdfs:seeAlso) property shape (sh:sourceShape).  But, the subclass's property shape is missing its sh:class." ;
-			sh:resultPath ex:property ;
-			sh:resultSeverity sh:Violation ;
-			sh:sourceShape ex:ClassA-property ;
-			sh:value [
 				sh:path ex:property ;
 			] ;
 		]

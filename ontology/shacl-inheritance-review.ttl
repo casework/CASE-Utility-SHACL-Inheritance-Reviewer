@@ -68,41 +68,6 @@ shir:PropertyShapeComponentBroadenedError-path
 	shir:reviews sh:path ;
 	.
 
-shir:PropertyShapeComponentDroppedError
-	a owl:Class ;
-	rdfs:subClassOf shir:PropertyShapeBroadenedError ;
-	.
-
-shir:PropertyShapeComponentDroppedError-class
-	a owl:Class ;
-	rdfs:subClassOf shir:PropertyShapeComponentDroppedError ;
-	shir:reviews sh:class ;
-	.
-
-shir:PropertyShapeComponentDroppedError-datatype
-	a owl:Class ;
-	rdfs:subClassOf shir:PropertyShapeComponentDroppedError ;
-	shir:reviews sh:datatype ;
-	.
-
-shir:PropertyShapeComponentDroppedError-maxCount
-	a owl:Class ;
-	rdfs:subClassOf
-		shir:PropertyShapeComponentDroppedError ,
-		shir:PropertyShapeIntervalBroadenedError
-		;
-	shir:reviews sh:maxCount ;
-	.
-
-shir:PropertyShapeComponentDroppedError-minCount
-	a owl:Class ;
-	rdfs:subClassOf
-		shir:PropertyShapeComponentDroppedError ,
-		shir:PropertyShapeIntervalBroadenedError
-		;
-	shir:reviews sh:minCount ;
-	.
-
 shir:ShapeBroadenedError
 	a owl:Class ;
 	rdfs:subClassOf sh:ValidationResult ;

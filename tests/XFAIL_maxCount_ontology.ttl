@@ -110,32 +110,12 @@ ex:ClassD
 			sh:path ex:property-null-max-same-narrower ;
 		]
 		;
-	shir:shouldTriggerBroadeningError
-		[
-			a shir:PropertyShapeComponentBroadenedError-maxCount ;
-			rdfs:seeAlso ex:ClassC ;
-			sh:resultPath ex:property-null-max-broader ;
-			sh:sourceShape ex:ClassC-property-null-max-broader ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassC ;
-			sh:resultPath ex:property-null-max-null ;
-			sh:sourceShape ex:ClassC-property-null-max-null ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassB ;
-			sh:sourceShape ex:ClassB-property-null-max-same-null ;
-			sh:resultPath ex:property-null-max-same-null ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-maxCount ;
-			rdfs:seeAlso ex:ClassC ;
-			sh:resultPath ex:property-null-max-same-null ;
-			sh:sourceShape ex:ClassC-property-null-max-same-null ;
-		]
-		;
+	shir:shouldTriggerBroadeningError [
+		a shir:PropertyShapeComponentBroadenedError-maxCount ;
+		rdfs:seeAlso ex:ClassC ;
+		sh:resultPath ex:property-null-max-broader ;
+		sh:sourceShape ex:ClassC-property-null-max-broader ;
+	] ;
 	.
 
 ex:property-null-max-broader

@@ -112,32 +112,12 @@ ex:ClassD
 			sh:path ex:property-null-min-same-narrower ;
 		]
 		;
-	shir:shouldTriggerBroadeningError
-		[
-			a shir:PropertyShapeComponentBroadenedError-minCount ;
-			rdfs:seeAlso ex:ClassC ;
-			sh:resultPath ex:property-null-min-broader ;
-			sh:sourceShape ex:ClassC-property-null-min-broader ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassC ;
-			sh:resultPath ex:property-null-min-null ;
-			sh:sourceShape ex:ClassC-property-null-min-null ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassB ;
-			sh:resultPath ex:property-null-min-same-null ;
-			sh:sourceShape ex:ClassB-property-null-min-same-null ;
-		] ,
-		[
-			a shir:PropertyShapeComponentDroppedError-minCount ;
-			rdfs:seeAlso ex:ClassC ;
-			sh:resultPath ex:property-null-min-same-null ;
-			sh:sourceShape ex:ClassC-property-null-min-same-null ;
-		]
-		;
+	shir:shouldTriggerBroadeningError [
+		a shir:PropertyShapeComponentBroadenedError-minCount ;
+		rdfs:seeAlso ex:ClassC ;
+		sh:resultPath ex:property-null-min-broader ;
+		sh:sourceShape ex:ClassC-property-null-min-broader ;
+	] ;
 	.
 
 ex:property-null-min-broader

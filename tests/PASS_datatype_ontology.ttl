@@ -14,6 +14,7 @@ ex:ClassA
 		sh:NodeShape
 		;
 	sh:property
+		ex:ClassA-property-typed-untyped ,
 		[
 			sh:datatype ex:datatype ;
 			sh:path ex:property-typed ;
@@ -24,12 +25,44 @@ ex:ClassA
 		;
 	.
 
+ex:ClassA-property-typed-untyped
+	sh:datatype ex:datatype ;
+	sh:path ex:property-typed-untyped ;
+	.
+
 ex:ClassB
 	a
 		owl:Class ,
 		sh:NodeShape
 		;
 	rdfs:subClassOf ex:ClassA ;
+	sh:property
+		ex:ClassB-property-untyped-typed-untyped ,
+		[
+			sh:datatype ex:datatype ;
+			sh:path ex:property-typed ;
+		] ,
+		[
+			sh:datatype ex:datatype ;
+			sh:path ex:property-untyped-typed ;
+		] ,
+		[
+			sh:path ex:property-typed-untyped ;
+		]
+		;
+	.
+
+ex:ClassB-property-untyped-typed-untyped
+	sh:datatype ex:datatype ;
+	sh:path ex:property-untyped-typed-untyped ;
+	.
+
+ex:ClassC
+	a
+		owl:Class ,
+		sh:NodeShape
+		;
+	rdfs:subClassOf ex:ClassB ;
 	sh:property
 		[
 			sh:datatype ex:datatype ;
@@ -38,6 +71,12 @@ ex:ClassB
 		[
 			sh:datatype ex:datatype ;
 			sh:path ex:property-untyped-typed ;
+		] ,
+		[
+			sh:path ex:property-typed-untyped ;
+		] ,
+		[
+			sh:path ex:property-untyped-typed-untyped ;
 		]
 		;
 	.
@@ -50,7 +89,15 @@ ex:property-typed
 	a owl:DatatypeProperty ;
 	.
 
+ex:property-typed-untyped
+	a owl:DatatypeProperty ;
+	.
+
 ex:property-untyped-typed
+	a owl:DatatypeProperty ;
+	.
+
+ex:property-untyped-typed-untyped
 	a owl:DatatypeProperty ;
 	.
 

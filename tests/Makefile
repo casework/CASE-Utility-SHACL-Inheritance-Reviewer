@@ -145,7 +145,6 @@ check-pytest: \
   PASS_path_inheritance.ttl \
   PASS_subprop_inheritance.ttl \
   XFAIL_class_inheritance.ttl \
-  XFAIL_datatype_inheritance.ttl \
   XFAIL_maxCount_inheritance.ttl \
   XFAIL_minCount_inheritance.ttl \
   XFAIL_path_inheritance.ttl \
