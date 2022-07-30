@@ -258,15 +258,15 @@ def test_kb_test_6():
 
 
 def test_kb_test_7() -> None:
-    g = load_and_check_graph(
-        "kb-test-7.ttl",
-        False,
-        "When this was written, pyshacl was known to not report ontology-level errors before reporting instance data-level errors.",
-    )
-    assert isinstance(g, rdflib.Graph)
-    raise NotImplementedError(
-        "Test lacking exemplar for reporting ontology-level error."
-    )
+    try:
+        g = load_and_check_graph(
+            "kb-test-7.ttl",
+            False,
+            "When this was written, pyshacl was known to not report ontology-level errors before reporting instance data-level errors.",
+        )
+        assert isinstance(g, rdflib.Graph)
+    except ValueError:
+        pytest.xfail("Test lacking exemplar for reporting ontology-level error.")
 
 
 def test_pass_class():
