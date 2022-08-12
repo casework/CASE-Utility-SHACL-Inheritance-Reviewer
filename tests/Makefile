@@ -28,7 +28,8 @@ all: \
   kb-test-4.ttl \
   kb-test-5.ttl \
   kb-test-6.ttl \
-  kb-test-7.ttl
+  kb-test-7.ttl \
+  kb-test-8.ttl
 
 .PHONY: \
   check-cli-xfails \
@@ -119,6 +120,7 @@ $(top_srcdir)/.lib.done.log:
 	touch $@
 
 check: \
+  check-mypy \
   check-cli-xfails \
   check-pytest
 
@@ -126,6 +128,15 @@ check: \
 check-cli-xfails: \
   .xfail-out_graph.done.log \
   .xfail-strict.done.log
+
+check-mypy: \
+  .venv.done.log
+	source venv/bin/activate \
+	  && mypy \
+	    --exclude venv \
+	    --strict \
+	    $(top_srcdir)/case_shacl_inheritance_reviewer \
+	    .
 
 check-pytest: \
   PASS_class_inheritance.ttl \
@@ -135,7 +146,6 @@ check-pytest: \
   PASS_path_inheritance.ttl \
   PASS_subprop_inheritance.ttl \
   XFAIL_class_inheritance.ttl \
-  XFAIL_datatype_inheritance.ttl \
   XFAIL_maxCount_inheritance.ttl \
   XFAIL_minCount_inheritance.ttl \
   XFAIL_path_inheritance.ttl \
@@ -147,7 +157,8 @@ check-pytest: \
   kb-test-4.ttl \
   kb-test-5.ttl \
   kb-test-6.ttl \
-  kb-test-7.ttl
+  kb-test-7.ttl \
+  kb-test-8.ttl
 	source venv/bin/activate \
 	  && pytest \
 	    --log-level=DEBUG \
@@ -174,14 +185,14 @@ ex-triangle.ttl: \
   .venv.done.log \
   ex-triangle-1-1.ttl \
   ex-triangle-1-2.ttl \
-  ex-triangle-2.ttl \
-  ex_ttl.py
+  ex-triangle-2.ttl
 	source venv/bin/activate \
-	  && python ex_ttl.py \
-	    __$@ \
+	  && rdfpipe \
+	    --output-format turtle \
 	    ex-triangle-1-1.ttl \
 	    ex-triangle-1-2.ttl \
-	    ex-triangle-2.ttl
+	    ex-triangle-2.ttl \
+	    > __$@
 	java -jar $(rdf_toolkit_jar) \
 	  --infer-base-iri \
 	  --inline-blank-nodes \
@@ -318,4 +329,30 @@ kb-test-7.ttl: \
 	    --shacl-file-format turtle \
 	    kb-triangle-3.ttl \
 	    || true    #xfail
+	mv _$@ $@
+
+# Normalize at least this file due to sort order not being guaranteed.
+kb-test-8.ttl: \
+  .venv.done.log \
+  ex-constraint-repetition.ttl \
+  kb-triangle-4.ttl
+	source venv/bin/activate \
+	  && pyshacl \
+	    --data-file-format turtle \
+	    --format turtle \
+	    --ont-file-format turtle \
+	    --ont-graph ex-constraint-repetition.ttl \
+	    --output __$@ \
+	    --shacl ex-constraint-repetition.ttl \
+	    --shacl-file-format turtle \
+	    kb-triangle-4.ttl \
+	    || true    #xfail
+	java -jar $(rdf_toolkit_jar) \
+	  --infer-base-iri \
+	  --inline-blank-nodes \
+	  --source __$@ \
+	  --source-format turtle \
+	  --target _$@ \
+	  --target-format turtle
+	rm __$@
 	mv _$@ $@

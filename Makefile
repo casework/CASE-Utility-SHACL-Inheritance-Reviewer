@@ -18,6 +18,7 @@ PYTHON3 ?= $(shell which python3.9 2>/dev/null || which python3.8 2>/dev/null ||
 GSED ?= $(shell which gsed 2>/dev/null || which sed)
 
 all: \
+  .venv-pre-commit/var/.pre-commit-built.log \
   README.md
 
 .PHONY: \
@@ -59,8 +60,32 @@ README.md: \
 	  --directory lib
 	touch $@
 
+# This virtual environment is meant to be built once and then persist, even through 'make clean'.
+# If a recipe is written to remove this flag file, it should first run `pre-commit uninstall`.
+.venv-pre-commit/var/.pre-commit-built.log:
+	rm -rf .venv-pre-commit
+	test -r .pre-commit-config.yaml \
+	  || (echo "ERROR:Makefile:pre-commit is expected to install for this repository, but .pre-commit-config.yaml does not seem to exist." >&2 ; exit 1)
+	$(PYTHON3) -m venv \
+	  .venv-pre-commit
+	source .venv-pre-commit/bin/activate \
+	  && pip install \
+	    --upgrade \
+	    pip \
+	    setuptools \
+	    wheel
+	source .venv-pre-commit/bin/activate \
+	  && pip install \
+	    pre-commit
+	source .venv-pre-commit/bin/activate \
+	  && pre-commit install
+	mkdir -p \
+	  .venv-pre-commit/var
+	touch $@
+
 # After running unit tests, see if README.md needs to be regenerated.
 check: \
+  .venv-pre-commit/var/.pre-commit-built.log \
   .lib.done.log
 	$(MAKE) \
 	  PYTHON3=$(PYTHON3) \
@@ -80,7 +105,8 @@ clean:
 	  clean
 
 download: \
-  .lib.done.log
+  .lib.done.log \
+  .venv-pre-commit/var/.pre-commit-built.log
 	$(MAKE) \
 	  PYTHON3=$(PYTHON3) \
 	  --directory tests \

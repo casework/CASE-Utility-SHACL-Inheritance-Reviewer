@@ -14,7 +14,7 @@
 """
 This script was written to run unit tests in the pytest framework.
 """
- 
+
 import glob
 import logging
 import os
@@ -29,17 +29,19 @@ NS_EX = rdflib.Namespace("http://example.org/ontology/example/")
 NS_SH = rdflib.SH
 NS_SHIR = rdflib.Namespace("http://example.org/ontology/shacl-inheritance-review/")
 
+
 def load_and_check_graph(
-  basename : str,
-  required_conformance : bool,
-  conformance_mismatch_expectation : typing.Optional[str] = None
+    basename: str,
+    required_conformance: bool,
+    conformance_mismatch_expectation: typing.Optional[str] = None,
 ) -> rdflib.Graph:
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
     graph.parse(graph_filepath, format="turtle")
-    conforms = None
+    conforms: typing.Optional[bool] = None
     for triple in graph.triples((None, NS_SH.conforms, None)):
         assert conforms is None, "Found second result."
+        assert isinstance(triple[2], rdflib.Literal)
         conforms = triple[2].toPython()
 
     if conformance_mismatch_expectation is None:
@@ -48,46 +50,44 @@ def load_and_check_graph(
         try:
             assert conforms == required_conformance
             raise ValueError("XPASS - Was expecting failure.")
-        except:
+        except AssertionError:
             pytest.xfail(conformance_mismatch_expectation)
     return graph
 
-def load_ontology_graph(
-  basename : str
-) -> rdflib.Graph:
+
+def load_ontology_graph(basename: str) -> rdflib.Graph:
     graph = rdflib.Graph()
     graph_filepath = os.path.join(os.path.dirname(__file__), basename)
     graph.parse(graph_filepath, format="turtle")
     return graph
 
-def test_coverage():
+
+def test_coverage() -> None:
     # Ground truth:
     # * There is an expected set of IRIs of error classes emitted by the reports.
     expected = {
-      str(NS_SHIR["PropertyShapeComponentBroadenedError-class"]),
-      str(NS_SHIR["PropertyShapeComponentBroadenedError-datatype"]),
-      str(NS_SHIR["PropertyShapeComponentBroadenedError-maxCount"]),
-      str(NS_SHIR["PropertyShapeComponentBroadenedError-minCount"]),
-      str(NS_SHIR["PropertyShapeComponentBroadenedError-path"]),
-      str(NS_SHIR["PropertyShapeComponentDroppedError-class"]),
-      str(NS_SHIR["PropertyShapeComponentDroppedError-datatype"]),
-      str(NS_SHIR["PropertyShapeComponentDroppedError-maxCount"]),
-      str(NS_SHIR["PropertyShapeComponentDroppedError-minCount"])
+        str(NS_SHIR["PropertyShapeComponentBroadenedError-class"]),
+        str(NS_SHIR["PropertyShapeComponentBroadenedError-datatype"]),
+        str(NS_SHIR["PropertyShapeComponentBroadenedError-maxCount"]),
+        str(NS_SHIR["PropertyShapeComponentBroadenedError-minCount"]),
+        str(NS_SHIR["PropertyShapeComponentBroadenedError-path"]),
     }
     computed = set()
 
     graph = rdflib.Graph()
     srcdir = os.path.dirname(__file__)
-    top_srcdir = os.path.dirname(srcdir)
 
     # Load XFAIL reports.
-    for inheritance_ttl in sorted(glob.glob(os.path.join(srcdir, "XFAIL_*_inheritance.ttl"))):
+    for inheritance_ttl in sorted(
+        glob.glob(os.path.join(srcdir, "XFAIL_*_inheritance.ttl"))
+    ):
         _logger.debug("inheritance_ttl = %r.", inheritance_ttl)
         basename = os.path.basename(inheritance_ttl)
         tmp_graph = load_and_check_graph(basename, False)
         graph += tmp_graph
 
-    query = rdflib.plugins.sparql.prepareQuery("""\
+    query = rdflib.plugins.sparql.processor.prepareQuery(
+        """\
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX shir: <http://example.org/ontology/shacl-inheritance-review/>
 
@@ -98,30 +98,38 @@ WHERE {
     sh:result/a ?nClass ;
     .
 }
-""")
+"""
+    )
     for result in graph.query(query):
         n_class = result[0]
         computed.add(str(n_class))
 
     try:
         assert expected == computed
-    except:
+    except AssertionError:
         if computed - expected != set():
             raise
-        if expected - computed == {str(NS_SHIR["PropertyShapeComponentBroadenedError-datatype"])}:
-            pytest.xfail("At this time, the broadened-on-datatype test has not been specified.")
-    raise ValueError("XPASS - Since original writing, the broadened-on-datatype test has been specified and should be reviewed for the test_coverage function.")
+        if expected - computed == {
+            str(NS_SHIR["PropertyShapeComponentBroadenedError-datatype"])
+        }:
+            pytest.xfail(
+                "At this time, the broadened-on-datatype test has not been specified."
+            )
+    raise ValueError(
+        "XPASS - Since original writing, the broadened-on-datatype test has been specified and should be reviewed for the test_coverage function."
+    )
+
 
 def _test_inheritance_xfail_from_inlined_ground_truth(
-  ontology_basename : str,
-  inheritance_basename : str
-):
+    ontology_basename: str, inheritance_basename: str
+) -> None:
     ontology_graph = load_ontology_graph(ontology_basename)
     inheritance_graph = load_and_check_graph(inheritance_basename, False)
     expected = set()
     computed = set()
 
-    expected_query = rdflib.plugins.sparql.prepareQuery("""\
+    expected_query = rdflib.plugins.sparql.processor.prepareQuery(
+        """\
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX shir: <http://example.org/ontology/shacl-inheritance-review/>
 
@@ -146,25 +154,29 @@ WHERE {
       sh:path ?nClassPropertyShapePath
   }
 }
-""")
+"""
+    )
     for result in ontology_graph.query(expected_query):
         (
-          n_class_node_shape,
-          n_class_property_shape,
-          n_class_property_shape_path,
-          n_superclass_node_shape,
-          n_superclass_property_shape,
-          n_superclass_property_shape_path,
-          n_error_class
+            n_class_node_shape,
+            n_class_property_shape,
+            n_class_property_shape_path,
+            n_superclass_node_shape,
+            n_superclass_property_shape,
+            n_superclass_property_shape_path,
+            n_error_class,
         ) = result
-        expected.add((
-          n_error_class.toPython(),
-          n_class_node_shape.toPython(),
-          n_superclass_node_shape.toPython(),
-          n_superclass_property_shape_path.toPython()
-        ))
+        expected.add(
+            (
+                n_error_class.toPython(),
+                n_class_node_shape.toPython(),
+                n_superclass_node_shape.toPython(),
+                n_superclass_property_shape_path.toPython(),
+            )
+        )
 
-    computed_query = rdflib.plugins.sparql.prepareQuery("""\
+    computed_query = rdflib.plugins.sparql.processor.prepareQuery(
+        """\
 PREFIX sh: <http://www.w3.org/ns/shacl#>
 PREFIX shir: <http://example.org/ontology/shacl-inheritance-review/>
 
@@ -187,93 +199,147 @@ WHERE {
     sh:path ?nSuperclassPropertyShapePath ;
     .
 }
-""")
+"""
+    )
     for result in inheritance_graph.query(computed_query):
         (
-          n_class_node_shape,
-          n_superclass_node_shape,
-          n_superclass_property_shape_path,
-          n_error_class
+            n_class_node_shape,
+            n_superclass_node_shape,
+            n_superclass_property_shape_path,
+            n_error_class,
         ) = result
-        computed.add((
-          n_error_class.toPython(),
-          n_class_node_shape.toPython(),
-          n_superclass_node_shape.toPython(),
-          n_superclass_property_shape_path.toPython()
-        ))
+        computed.add(
+            (
+                n_error_class.toPython(),
+                n_class_node_shape.toPython(),
+                n_superclass_node_shape.toPython(),
+                n_superclass_property_shape_path.toPython(),
+            )
+        )
     assert expected == computed
 
-def test_kb_test_1():
+
+def test_kb_test_1() -> None:
     g = load_and_check_graph("kb-test-1.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_kb_test_2():
+
+def test_kb_test_2() -> None:
     g = load_and_check_graph("kb-test-2.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
-def test_kb_test_3():
+
+def test_kb_test_3() -> None:
     g = load_and_check_graph("kb-test-3.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_kb_test_4():
-    g = load_and_check_graph("kb-test-4.ttl", False, "When this was written, pyshacl was known to disagree with test developer's subclass--shape expectations from combined shapes+ontology file.")
+
+def test_kb_test_4() -> None:
+    g = load_and_check_graph(
+        "kb-test-4.ttl",
+        False,
+        "When this was written, pyshacl was known to disagree with test developer's subclass--shape expectations from combined shapes+ontology file.",
+    )
     assert isinstance(g, rdflib.Graph)
 
-def test_kb_test_5():
+
+def test_kb_test_5() -> None:
     g = load_and_check_graph("kb-test-5.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
-def test_kb_test_6():
+
+def test_kb_test_6() -> None:
     g = load_and_check_graph("kb-test-6.ttl", False)
     assert isinstance(g, rdflib.Graph)
 
-def test_kb_test_7():
-    g = load_and_check_graph("kb-test-7.ttl", False, "When this was written, pyshacl was known to not report ontology-level errors before reporting instance data-level errors.")
-    assert isinstance(g, rdflib.Graph)
-    raise NotImplementedError("Test lacking exemplar for reporting ontology-level error.")
 
-def test_pass_class():
+def test_kb_test_7() -> None:
+    try:
+        g = load_and_check_graph(
+            "kb-test-7.ttl",
+            False,
+            "When this was written, pyshacl was known to not report ontology-level errors before reporting instance data-level errors.",
+        )
+        assert isinstance(g, rdflib.Graph)
+    except ValueError:
+        pytest.xfail("Test lacking exemplar for reporting ontology-level error.")
+
+
+def test_kb_test_8() -> None:
+    """
+    Confirm both source shapes are referenced in the SHACL validation results.
+    """
+    expected: int = 2
+    computed: int
+
+    g = load_and_check_graph("kb-test-8.ttl", False)
+    assert isinstance(g, rdflib.Graph)
+
+    computed = len(set(g.triples((None, NS_SH.sourceShape, None))))
+
+    assert expected == computed
+
+
+def test_pass_class() -> None:
     g = load_and_check_graph("PASS_class_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_pass_datatype():
+
+def test_pass_datatype() -> None:
     g = load_and_check_graph("PASS_datatype_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_pass_maxCount():
+
+def test_pass_maxCount() -> None:
     g = load_and_check_graph("PASS_maxCount_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_pass_minCount():
+
+def test_pass_minCount() -> None:
     g = load_and_check_graph("PASS_minCount_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_pass_path():
+
+def test_pass_path() -> None:
     g = load_and_check_graph("PASS_path_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_pass_subprop():
+
+def test_pass_subprop() -> None:
     g = load_and_check_graph("PASS_path_inheritance.ttl", True)
     assert isinstance(g, rdflib.Graph)
 
-def test_xfail_class_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_class_ontology.ttl", "XFAIL_class_inheritance.ttl")
 
-def test_xfail_datatype_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_datatype_ontology.ttl", "XFAIL_datatype_inheritance.ttl")
+def test_xfail_class_inheritance() -> None:
+    _test_inheritance_xfail_from_inlined_ground_truth(
+        "XFAIL_class_ontology.ttl", "XFAIL_class_inheritance.ttl"
+    )
 
-def test_xfail_maxCount_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_maxCount_ontology.ttl", "XFAIL_maxCount_inheritance.ttl")
 
-def test_xfail_minCount_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_minCount_ontology.ttl", "XFAIL_minCount_inheritance.ttl")
+def test_xfail_maxCount_inheritance() -> None:
+    _test_inheritance_xfail_from_inlined_ground_truth(
+        "XFAIL_maxCount_ontology.ttl", "XFAIL_maxCount_inheritance.ttl"
+    )
 
-def test_xfail_path_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_path_ontology.ttl", "XFAIL_path_inheritance.ttl")
 
-def test_xfail_subprop_inheritance():
-    _test_inheritance_xfail_from_inlined_ground_truth("XFAIL_subprop_ontology.ttl", "XFAIL_subprop_inheritance.ttl")
+def test_xfail_minCount_inheritance() -> None:
+    _test_inheritance_xfail_from_inlined_ground_truth(
+        "XFAIL_minCount_ontology.ttl", "XFAIL_minCount_inheritance.ttl"
+    )
 
-def test_ex_triangle_inheritance():
+
+def test_xfail_path_inheritance() -> None:
+    _test_inheritance_xfail_from_inlined_ground_truth(
+        "XFAIL_path_ontology.ttl", "XFAIL_path_inheritance.ttl"
+    )
+
+
+def test_xfail_subprop_inheritance() -> None:
+    _test_inheritance_xfail_from_inlined_ground_truth(
+        "XFAIL_subprop_ontology.ttl", "XFAIL_subprop_inheritance.ttl"
+    )
+
+
+def test_ex_triangle_inheritance() -> None:
     g = load_and_check_graph("ex-triangle-inheritance.ttl", False)
     assert isinstance(g, rdflib.Graph)

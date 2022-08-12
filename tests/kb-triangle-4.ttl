@@ -1,0 +1,18 @@
+@prefix ex: <http://example.org/ontology/> .
+@prefix kb: <http://example.org/kb/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+kb:point-1 a ex:Point .
+kb:point-2 a ex:Point .
+kb:point-3 a ex:Point .
+kb:point-4 a ex:Point .
+
+kb:triangle-1
+  a ex:SpecializedTriangle ;
+  rdfs:comment "A triangle that has too many points.  Written to demonstrate issues with wholly repeating constraints between subclasses."@en ;
+  ex:hasPoint kb:point-1 ;
+  ex:hasPoint kb:point-2 ;
+  ex:hasPoint kb:point-3 ;
+  ex:hasPoint kb:point-4 ;
+  .
+

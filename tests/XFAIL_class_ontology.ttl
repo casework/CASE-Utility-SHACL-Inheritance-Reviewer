@@ -80,23 +80,6 @@ ex:ClassD
 	] ;
 	.
 
-ex:ClassE
-	a
-		owl:Class ,
-		sh:NodeShape
-		;
-	rdfs:subClassOf ex:ClassA ;
-	sh:property [
-		sh:path ex:property ;
-	] ;
-	shir:shouldTriggerBroadeningError [
-		a shir:PropertyShapeComponentDroppedError-class ;
-		rdfs:seeAlso ex:ClassA ;
-		sh:resultPath ex:property ;
-		sh:sourceShape ex:ClassA-property ;
-	] ;
-	.
-
 ex:property
 	a owl:DatatypeProperty ;
 	.
