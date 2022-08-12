@@ -185,14 +185,14 @@ ex-triangle.ttl: \
   .venv.done.log \
   ex-triangle-1-1.ttl \
   ex-triangle-1-2.ttl \
-  ex-triangle-2.ttl \
-  ex_ttl.py
+  ex-triangle-2.ttl
 	source venv/bin/activate \
-	  && python ex_ttl.py \
-	    __$@ \
+	  && rdfpipe \
+	    --output-format turtle \
 	    ex-triangle-1-1.ttl \
 	    ex-triangle-1-2.ttl \
-	    ex-triangle-2.ttl
+	    ex-triangle-2.ttl \
+	    > __$@
 	java -jar $(rdf_toolkit_jar) \
 	  --infer-base-iri \
 	  --inline-blank-nodes \
