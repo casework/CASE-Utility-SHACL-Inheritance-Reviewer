@@ -65,6 +65,11 @@ This repository is available at the following locations:
 Releases and issue tracking will be handled at the [casework location](https://github.com/casework/CASE-Utility-SHACL-Inheritance-Reviewer).
 
 
+## Licensing
+
+Portions of this repository contributed by NIST are governed by the [NIST Software Licensing Statement](LICENSE.md#nist-software-licensing-statement).
+
+
 ## Make targets
 
 Some `make` targets are defined for this repository:
