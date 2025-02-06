@@ -20,6 +20,7 @@ import typing
 
 import rdflib.plugins.sparql
 import rdflib.util
+from rdflib.query import ResultRow
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
@@ -261,6 +262,7 @@ WHERE {
         reported_first_result = False
         _logger.debug("Running query...")
         for result in in_graph.query(query_object):
+            assert isinstance(result, ResultRow)
             if not reported_first_result:
                 _logger.debug("Query now yielding results.")
                 reported_first_result = True
