@@ -25,6 +25,9 @@ all: \
   README.md
 
 .PHONY: \
+  check-mypy \
+  check-supply-chain \
+  check-supply-chain-pre-commit \
   download
 
 README.md: \
@@ -89,13 +92,55 @@ README.md: \
 # After running unit tests, see if README.md needs to be regenerated.
 check: \
   .venv-pre-commit/var/.pre-commit-built.log \
-  .lib.done.log
+  .lib.done.log \
+  check-mypy
 	$(MAKE) \
-	  PYTHON3=$(PYTHON3) \
 	  --directory tests \
 	  check
 	$(MAKE) \
 	  README.md
+
+# Side-effect: This descent happening first sets up virtual environment.
+check-mypy:
+	$(MAKE) \
+	  PYTHON3=$(PYTHON3) \
+	  --directory tests \
+	  check-mypy
+
+check-supply-chain: \
+  check-mypy \
+  check-supply-chain-pre-commit
+
+# Update pre-commit configuration and use the updated config file to
+# review code.  Only have Make exit if 'pre-commit run' modifies files.
+check-supply-chain-pre-commit: \
+  .venv-pre-commit/var/.pre-commit-built.log
+	source .venv-pre-commit/bin/activate \
+	  && pre-commit autoupdate
+	git diff \
+	  --exit-code \
+	  .pre-commit-config.yaml \
+	  || ( \
+	      source .venv-pre-commit/bin/activate \
+	        && pre-commit run \
+	          --all-files \
+	          --config .pre-commit-config.yaml \
+	    ) \
+	    || git diff \
+	      --exit-code \
+	      --stat \
+	      || ( \
+	          echo \
+	            "WARNING:Makefile:pre-commit configuration can be updated.  It appears the update would change file formatting." \
+	            >&2 \
+	            ; exit 1 \
+                )
+	@git diff \
+	  --exit-code \
+	  .pre-commit-config.yaml \
+	  || echo \
+	    "INFO:Makefile:pre-commit configuration can be updated.  It appears the update would not change file formatting." \
+	    >&2
 
 clean:
 	@rm -f \
