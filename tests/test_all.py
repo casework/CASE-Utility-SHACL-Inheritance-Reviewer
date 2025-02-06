@@ -22,6 +22,8 @@ import typing
 
 import pytest
 import rdflib.plugins.sparql
+from rdflib import URIRef
+from rdflib.query import ResultRow
 
 _logger = logging.getLogger(os.path.basename(__file__))
 
@@ -101,6 +103,7 @@ WHERE {
 """
     )
     for result in graph.query(query):
+        assert isinstance(result, ResultRow)
         n_class = result[0]
         computed.add(str(n_class))
 
@@ -157,6 +160,7 @@ WHERE {
 """
     )
     for result in ontology_graph.query(expected_query):
+        assert isinstance(result, ResultRow)
         (
             n_class_node_shape,
             n_class_property_shape,
@@ -166,6 +170,10 @@ WHERE {
             n_superclass_property_shape_path,
             n_error_class,
         ) = result
+        assert isinstance(n_error_class, URIRef)
+        assert isinstance(n_class_node_shape, URIRef)
+        assert isinstance(n_superclass_node_shape, URIRef)
+        assert isinstance(n_superclass_property_shape_path, URIRef)
         expected.add(
             (
                 n_error_class.toPython(),
@@ -202,12 +210,17 @@ WHERE {
 """
     )
     for result in inheritance_graph.query(computed_query):
+        assert isinstance(result, ResultRow)
         (
             n_class_node_shape,
             n_superclass_node_shape,
             n_superclass_property_shape_path,
             n_error_class,
         ) = result
+        assert isinstance(n_error_class, URIRef)
+        assert isinstance(n_class_node_shape, URIRef)
+        assert isinstance(n_superclass_node_shape, URIRef)
+        assert isinstance(n_superclass_property_shape_path, URIRef)
         computed.add(
             (
                 n_error_class.toPython(),
